@@ -147,6 +147,7 @@ public class BeanCounterLogic {
 	 *             either luck or skill.
 	 */
 	public static void main(String[] args) {
+		boolean luck;
 		int beanCount = 0;
 		int slotCount = 0;
 
@@ -200,15 +201,28 @@ public class BeanCounterLogic {
 			showUsage();
 			return;
 		}
+		if (beanCount < 0) {
+			showUsage();
+			return;
+		}
+
+		if (args[1].equals("luck")) {
+			luck = true;
+		} else if (args[1].equals("skill")) {
+			luck = false;
+		} else {
+			showUsage();
+			return;
+		}
+		
 		slotCount = 10;
-		boolean isLuck = args[1].equals("luck") ? true : false;
 
 		// Create the internal logic
 		BeanCounterLogic logic = new BeanCounterLogic(slotCount);
 		// Create the beans (in luck mode)
 		Bean[] beans = new Bean[beanCount];
 		for (int i = 0; i < beanCount; i++) {
-			beans[i] = new Bean(isLuck, new Random());
+			beans[i] = new Bean(luck, new Random());
 		}
 		// Initialize the logic with the beans
 		logic.reset(beans);

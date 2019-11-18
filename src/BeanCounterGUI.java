@@ -23,13 +23,27 @@ public class BeanCounterGUI {
 		}
 
 		int beanCount;
-		boolean luck = args[1].equals("luck") ? true : false;
 		try {
 			beanCount = Integer.parseInt(args[0]);
 		} catch (NumberFormatException ne) {
 			showUsage();
 			return;
 		}
+		if (beanCount < 0) {
+			showUsage();
+			return;
+		}
+
+		boolean luck;
+		if (args[1].equals("luck")) {
+			luck = true;
+		} else if (args[1].equals("skill")) {
+			luck = false;
+		} else {
+			showUsage();
+			return;
+		}
+		
 		// Create the main frame for the app
 		new MainFrame(beanCount, luck);
 	}

@@ -18,6 +18,10 @@ FUN-LOWER-HALF - When the "Lower Half" button is pressed, all beans except the l
 
 FUN-UPPER-HALF - When the "Upper Half" button is pressed, all beans except the upper half shall be discarded from the bottom slots.
 
-REPEAT - When the "Repeat" button is pressed, all beans in-flight and in the slots shall be added back to the pool of remaining beans.
+FUN-REPEAT - When the "Repeat" button is pressed, all beans in-flight and in the slots shall be added back to the pool of remaining beans.
 
-RESET - When the "Reset" button is pressed, the machine shall be reset to the initial state when it was started.
+FUN-RESET - When the "Reset" button is pressed, the machine shall be reset to the initial state when it was started.
+
+FUN-LUCK - When a bean encounters a peg, it shall have equal chances of falling left or right.
+
+FUN-SKILL - At the start of the program, each bean shall be assigned a skill level 0 to 9 according to a normal distribution.  The skill level of a bean shall not change for the duration of the program.  When falling through the machine, a bean shall fall right for the first N pegs it encounters, where N is its skill level.  For the remaining pegs, it shall fall left.
