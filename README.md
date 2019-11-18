@@ -1,9 +1,25 @@
+- [CS 1632 - Software Quality Assurance](#cs-1632---software-quality-assurance)
+  * [Overview](#Overview)
+  * [Background](#background)
+  * [Exploratory Testing](#exploratory-testing)
+    + [Luck Mode](#luck-mode)
+    + [Skill Mode](#skill-mode)
+  * [What to do](#what-to-do)
+    + [Automated Unit Test Writing](#automated-unit-test-writing)
+    + [Model Checking Property Writing](#model-checking-property-writing)
+    + [Coding](#coding)
+    + [Static Testing](#static-testing)
+    + [Manual System Testing](#manual-system-testing)
+  * [Format](#format)
+  * [Grading](#grading)
+  * [Submission](#submission)
+  
 # CS 1632 - Software Quality Assurance
 Fall Semester 2019
 
-DUE: Decemeber 12, 2019 11:59 PM (No extensions due to grading deadline)
+DUE: December 12, 2019 11:59 PM (No extensions due to grading deadline)
 
-## Deliverable 5
+## Overview
 
 For this final deliverable, you and your partner will develop a full-fledged
 GUI program (with the help of some skeleton code), along with various tests.
@@ -41,7 +57,7 @@ and provide reasons for it.
 People always look for reasons for changes in data.  But often the reason
 cannot be explained, because there was no reason for the change to begin with.
 The change in data can just be due to a statistical anomaly named regression to
-the mean.  For example, an answer to question 3. can simply be that the student
+the mean.  For example, an answer to question 3 can simply be that the student
 was exceptionally lucky during the midterms (she guessed all multiple choices
 and she got them all correct).  Her luck wore off and she just got what she
 deserved in the finals.  This is called regression to the mean.  Now if the
@@ -106,7 +122,7 @@ assigned a skill level from 0-9 on creation according to a bell curve with
 average 4.5 and standard deviation 1.5.  A skill level of 9 means the bean
 always makes the "right" choices (pun intended).  That means the bean will
 always go right when a peg is encountered, resulting it falling into the
-rightmost 9th slot. A skill evel of 0 means that the bean will always go left,
+rightmost 9th slot. A skill level of 0 means that the bean will always go left,
 resulting it falling into the leftmost 0th slot. For the in-between skill
 levels, the bean will first go right then left. For example, for a skill level
 of 7, the bean will go right 7 times then go left twice.  So where the bean
@@ -198,19 +214,20 @@ Remember, JPF only checks for the system property that no exceptions are raised
 if there are no user assertions.  As of now, there is only a single invariant
 assertion in main() method: the one that checks that in-flight beans are at
 legal positions at every step of the experiment.  Add two more assertions, as
-is described in the "// TODO" comments in the main() method.
+is described in the "// TODO" comments in the main() method.  _Also add at least one assertion of your own that helps you verify some system property_.
 
-With those two additionl assertions, the model checker should fail since you
-haven't written the code.  As you code, you will notice JPF running slower due
-to state explosion.  If you want to avoid this, you need to filter out state
-irrelevant to the assertions using the @FilterField annotation we learned
-during the exercise.  In my code, I had 714 states in the model checker (as can
-be seen in the "new=714" number below):
+With these additional assertions, the model checker should fail since you
+haven't written the code yet.  Write your code towards satisfying the assertions.  After satisfying, frequently run the model checker while coding to verify that the system properties are not violated, 
+
+If you notice JPF running slower while coding, this is due to state explosion.
+You need to filter out state irrelevant to the assertions using the
+@FilterField annotation we learned during the exercise.  In my code, I had 684
+states in the model checker (as can be seen in the "new=684" number below):
 
 ```
 ====================================================== statistics
 elapsed time:       00:00:00
-states:             new=714,visited=965,backtracked=1679,end=475
+states:             new=684,visited=695,backtracked=1379,end=448
 ...
 ```
 
@@ -289,7 +306,17 @@ Every assignment should have a title page with:
 * The URL of your code and tests on GitHub
 * The title "CS 1632 - DELIVERABLE 5: End-to-end Testing BeanCounter"
 
-Further details TBA.
+Write a short summary (< 1 page) of your experience...
+1. ...with Test Driven Development (TDD).  In what ways did it help you?  In what ways did it hinder you?
+2. ...with multiple layers of testing.  You used unit testing, model checking, static testing, and manual systems testing, at various layers.  Which did you find the most valuable?  Which did you find the least valuable?
+
+ON A SEPARATE PAGE, label the section "Unit Testing" and include a screenshot of code coverage that shows at least 80% coverage for each of BeanCounterLogic and Bean classes, when running TestRunner.
+
+ON A SEPARATE PAGE, label the section "Model Checking" and include a screenshot or copy-and-paste of the results of running runJPF.bat.  It should show no errors detected and the elapsed time should be less than 10 seconds.  Also, write a description of one additional assertion you added to check a system property, and why you chose to test that property.
+
+ON A SEPARATE PAGE, label the section "Manual System Testing" and write all test cases.  Each requirement should be tested by at least one test case.  Each test case should include the requisite IDENTIFIER, TEST CASE, PRECONDITIONS, EXECUTION STEPS, and POSTCONDITIONS.  Your test cases should be concise but precise.  Screenshots are allowed.  
+
+At the very end, add a traceability matrix.
 
 ## Grading
 

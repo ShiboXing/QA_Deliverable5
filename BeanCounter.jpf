@@ -13,3 +13,6 @@ vm.tree_output = true
 # Listeners.  Generate choice trace and state DOT files, and also raise error on asserts
 listener=.listener.SimpleDot,.listener.AssertionProperty,.listener.ChoiceTracker
 choice.trace = BeanCounterLogic.trace
+
+# If enabled, don't stop at the first error.  Report all errors.
+# search.multiple_errors = true
