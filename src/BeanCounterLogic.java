@@ -32,6 +32,8 @@ public class BeanCounterLogic {
 
 	// No bean in that particular Y coordinate
 	public static final int NO_BEAN_IN_YPOS = -1;
+	
+	private static int _numOfSlots;
 
 	/**
 	 * Constructor - creates the bean counter logic object that implements the core
@@ -41,6 +43,8 @@ public class BeanCounterLogic {
 	 */
 	BeanCounterLogic(int slotCount) {
 		// TODO: Implement
+		_numOfSlots=slotCount;
+		
 	}
 
 	/**

@@ -9,4 +9,22 @@ import java.util.Random;
 public class BeanTest {
 	// TODO: implement
 	// Be sure to mock Random if you don't want randomness during testing!
+
+	@Before
+	public void setup()
+	{
+
+	}
+
+	@Test
+	public void testBean()
+	{
+
+	}
+	
+	@After
+	public void teardown()
+	{
+
+	}
 }
