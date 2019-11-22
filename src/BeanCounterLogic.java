@@ -33,8 +33,11 @@ public class BeanCounterLogic {
 	// No bean in that particular Y coordinate
 	public static final int NO_BEAN_IN_YPOS = -1;
 	
-	private static int _numOfSlots;
-
+	private int _numOfSlots;
+	private Bean[] beans;
+	private int _counter;
+	
+	
 	/**
 	 * Constructor - creates the bean counter logic object that implements the core
 	 * logic. Our bean counter should start with a single bean at the top.
@@ -44,7 +47,7 @@ public class BeanCounterLogic {
 	BeanCounterLogic(int slotCount) {
 		// TODO: Implement
 		_numOfSlots=slotCount;
-		
+		_counter=0;
 	}
 
 	/**
@@ -54,6 +57,9 @@ public class BeanCounterLogic {
 	 */
 	public int getRemainingBeanCount() {
 		// TODO: Implement
+		
+
+
 		return 0;
 	}
 
@@ -65,6 +71,7 @@ public class BeanCounterLogic {
 	 */
 	public int getInFlightBeanXPos(int yPos) {
 		// TODO: Implement
+		
 		return NO_BEAN_IN_YPOS;
 	}
 

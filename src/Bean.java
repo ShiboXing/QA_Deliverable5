@@ -24,6 +24,9 @@ public class Bean {
 	private static final double SKILL_AVERAGE = 4.5;	// MainPanel.SLOT_COUNT * 0.5;
 	private static final double SKILL_STDEV = 1.5;		// Math.sqrt(SLOT_COUNT * 0.5 * (1 - 0.5));
 	
+	private boolean _mode; // 1 if luck, 0 if skill
+	private Random _rand;
+	private int _skill=-1; //will be assigned if skill mode is chosen
 	/**
 	 * Constructor - creates a bean in either luck mode or skill mode.
 	 * 
@@ -32,5 +35,18 @@ public class Bean {
 	 */
 	Bean(boolean isLuck, Random rand) {
 		// TODO: Implement
+		_mode=isLuck;
+		_rand=rand;	
+		if (!_mode)
+			_skill=rand.nextInt((int)(SKILL_AVERAGE*2)+1);
+	}  
+	/**
+	 * return the direction of the bean based on luck or skill
+	 */
+	public boolean getDir(){
+
+		
+		return false;
 	}
+
 }
