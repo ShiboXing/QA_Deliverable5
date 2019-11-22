@@ -34,8 +34,8 @@ public class BeanCounterLogic {
 	public static final int NO_BEAN_IN_YPOS = -1;
 	
 	private int _numOfSlots;
-	private Bean[] beans;
-	private int _counter;
+	private Bean[] _beans;
+	private int _counter; //a pointer point to beans array that indicates the last bean released to the machine.
 	
 	
 	/**
@@ -58,8 +58,6 @@ public class BeanCounterLogic {
 	public int getRemainingBeanCount() {
 		// TODO: Implement
 		
-
-
 		return 0;
 	}
 
@@ -97,7 +95,7 @@ public class BeanCounterLogic {
 	}
 
 	/**
-	 * Removes the lower half of all beans currently in slots, keeping only the
+	 * Removes the lower half of all mmmmmmmmpomnmmbeans currently in slots, keeping only the
 	 * upper half.
 	 */
 	public void upperHalf() {
@@ -138,7 +136,12 @@ public class BeanCounterLogic {
 	 *         means the machine is finished.
 	 */
 	public boolean advanceStep() {
-		// TODO: Implement
+		if(_counter<_beans.length)
+			_counter++;
+		for(int i=Math.max(_counter-_numOfSlots,0);i<_counter;i++)
+			_beans[i].move();
+		
+
 		return false;
 	}
 

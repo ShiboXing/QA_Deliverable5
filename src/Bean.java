@@ -23,10 +23,16 @@ public class Bean {
 	
 	private static final double SKILL_AVERAGE = 4.5;	// MainPanel.SLOT_COUNT * 0.5;
 	private static final double SKILL_STDEV = 1.5;		// Math.sqrt(SLOT_COUNT * 0.5 * (1 - 0.5));
-	
+	private static final int BOUND=(int)(SKILL_AVERAGE*2)+1;
 	private boolean _mode; // 1 if luck, 0 if skill
 	private Random _rand;
 	private int _skill=-1; //will be assigned if skill mode is chosen
+	private int times=0; //the number of falls the bean has taken, going left if less than skill
+
+	private int _x;
+	private int _y;
+	
+	
 	/**
 	 * Constructor - creates a bean in either luck mode or skill mode.
 	 * 
@@ -38,15 +44,44 @@ public class Bean {
 		_mode=isLuck;
 		_rand=rand;	
 		if (!_mode)
-			_skill=rand.nextInt((int)(SKILL_AVERAGE*2)+1);
+			_skill=rand.nextInt(BOUND);
+		_x=0;
+		_y=0;
 	}  
-	/**
-	 * return the direction of the bean based on luck or skill
-	 */
-	public boolean getDir(){
 
+	/**
+	 * move the bean to the next position
+	 * returns whether the bean moved left.
+	 */
+	public boolean move(){
+		boolean res=false;
+
+		if(_mode) {//luck
+			if(_rand.nextInt(BOUND)<5) 
+				res= true;
+		}
+		else //skill
+			if(times++ >=_skill) 
+				res= true;
+		if(!res)
+			_x++;
+		_y++;
+
+		return res;
 		
-		return false;
+	}
+	/**
+	 * return the x coordinate
+	 */
+	public int getX(){
+		return _x;
+	}
+
+	/**
+	 * return the y coordinate
+	 */
+	public int getY(){
+		return _y;
 	}
 
 }
