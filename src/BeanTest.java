@@ -130,7 +130,7 @@ public class BeanTest {
 				assertTrue(xField.getInt(bean)==i+1); //x coordinate is always 0
 			else
 				assertTrue(xField.getInt(bean)==skill);
-			assertTrue(yField.getInt(bean)==i+1); //y coordinate increments by 1 each time
+			assertTrue(yField.getInt(bean)==i); //y coordinate increments by 1 each time
 		}
 	}
 

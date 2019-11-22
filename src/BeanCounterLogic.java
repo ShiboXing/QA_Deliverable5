@@ -57,8 +57,7 @@ public class BeanCounterLogic {
 	 */
 	public int getRemainingBeanCount() {
 		// TODO: Implement
-		
-		return 0;
+		return _beans.length-_counter;
 	}
 
 	/**
@@ -124,6 +123,7 @@ public class BeanCounterLogic {
 	 * beginning, the machine starts with one bean at the top.
 	 */
 	public void repeat() {
+
 		// TODO: Implement
 	}
 
@@ -136,13 +136,16 @@ public class BeanCounterLogic {
 	 *         means the machine is finished.
 	 */
 	public boolean advanceStep() {
-		if(_counter<_beans.length)
+		if(_counter<_beans.length){
 			_counter++;
-		for(int i=Math.max(_counter-_numOfSlots,0);i<_counter;i++)
-			_beans[i].move();
-		
+			for(int i=Math.max(_counter-_numOfSlots,0);i<_counter;i++)
+				_beans[i].move();
+
+			return true;
+		}
 
 		return false;
+		
 	}
 
 	public static void showUsage() {

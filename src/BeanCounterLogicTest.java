@@ -49,14 +49,15 @@ public class BeanCounterLogicTest {
 	@Test
 	/**
 	 * checks if BCL's counter increments correctly upon calling advanceStep()
+	 * and advanceStep() stops after all beans have been released
 	 */
 	public void testAdvanceStep1() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 
-		
 		Field counterField=BeanCounterLogic.class.getDeclaredField("_counter");
+		Field beansField=BeanCounterLogic.class.getDeclaredField("_beans");
+		beansField.setAccessible(true);
 		counterField.setAccessible(true);
-		
-		
+		beansField.set(BCL,beans1);
 		
 		for (int i=0;i<beans1.length;i++)
 		{
@@ -64,8 +65,10 @@ public class BeanCounterLogicTest {
 			assertTrue(counterField.getInt(BCL)==i+1); //checks if the counter increments 
 		}
 
-		for(int i =0;i<100;i++) BCL.advanceStep();
+		for(int i =0;i<100;i++) 
+			assertFalse(BCL.advanceStep());
 
+		
 		assertTrue(counterField.getInt(BCL)==beans1.length); //BCL's counter won't increment after reaching the beans array length
 	}
 
@@ -88,8 +91,20 @@ public class BeanCounterLogicTest {
 
 	}
 
-	public void testGetRemainingBeanCount(){
 
+	@Test
+	/**
+	 * check if getRemainingBeans method return the correct value
+	 */
+	public void testGetRemainingBeanCount() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		Field beansField=BeanCounterLogic.class.getDeclaredField("_beans");
+		beansField.setAccessible(true);
+		beansField.set(BCL,beans1);
+		
+		for (int i=0;i<beans1.length-5;i++)
+			BCL.advanceStep();
+		
+		assertTrue(BCL.getRemainingBeanCount()==5);
 	}
 
 	@After

@@ -46,7 +46,7 @@ public class Bean {
 		if (!_mode)
 			_skill=rand.nextInt(BOUND);
 		_x=0;
-		_y=0;
+		_y=-1;
 	}  
 
 	/**
