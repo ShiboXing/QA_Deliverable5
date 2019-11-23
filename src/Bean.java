@@ -84,4 +84,12 @@ public class Bean {
 		return _y;
 	}
 
+	/**
+	 * resets the bean to the initial position
+	 */
+	public void reset(){
+		_x=0;
+		_y=-1;
+	}
+
 }

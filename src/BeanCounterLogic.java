@@ -140,7 +140,12 @@ public class BeanCounterLogic {
 	 */
 	public void repeat() {
 		// TODO: Implement
-		
+		for(int i=0;i<_slots.length;i++) _slots[i]=0;
+		for(int i=0;i<_counter;i++)
+		{ 
+			_beans[i].reset();		
+		}
+		_counter=0;
 	}
 
 	/**

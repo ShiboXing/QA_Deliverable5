@@ -153,8 +153,6 @@ public class BeanCounterLogicTest {
 		
 		for(int i=slots.length/2;i<slots.length;i++) assertTrue(slots[i]==0);
 		
-
-		
 	 }
 
 
@@ -195,6 +193,57 @@ public class BeanCounterLogicTest {
 		
 	}
 
+
+	@Test
+	/**
+	 * check if repeat() recovers the counter, count of beans per slot
+	 */
+	public void testRepeat1() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		Field slotsField=BeanCounterLogic.class.getDeclaredField("_slots");
+		Field numberOfSlotsField=BeanCounterLogic.class.getDeclaredField("_numOfSlots");
+		Field counterField=BeanCounterLogic.class.getDeclaredField("_counter");
+		Field BeansField=BeanCounterLogic.class.getDeclaredField("_beans");
+		slotsField.setAccessible(true);
+		numberOfSlotsField.setAccessible(true);
+		counterField.setAccessible(true);
+		BeansField.setAccessible(true);
+
+		
+
+		BeansField.set(BCL,beans1);
+		int[] slots={2,3,4,1,5,2,4,4}; //insert the _slots array
+		slotsField.set(BCL,slots);
+		numberOfSlotsField.set(BCL,slots.length);
+		counterField.set(BCL,5);
+
+		BCL.repeat();
+
+		assertTrue(counterField.getInt(BCL)==0);
+		for(int i:slots) assertTrue(i==0);
+
+	}
+
+	@Test
+	/**
+	 * check if the repeat() resets all beans their initial positions
+	 */
+	public void testRepeat2() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		Field BeansField=BeanCounterLogic.class.getDeclaredField("_beans");
+		Field counterField=BeanCounterLogic.class.getDeclaredField("_counter");
+		BeansField.setAccessible(true);
+		counterField.setAccessible(true);
+		BeansField.set(BCL,beans1);
+		int counter=5;
+		counterField.set(BCL,counter);
+
+		BCL.repeat();
+		for (int i=0;i<counter;i++){
+
+			Mockito.verify(beans1[i],Mockito.times(1)).reset();
+		}
+		
+		
+	}
 
 	@Test
 	/**
