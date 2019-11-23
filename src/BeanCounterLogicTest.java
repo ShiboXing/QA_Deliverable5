@@ -17,7 +17,7 @@ public class BeanCounterLogicTest {
 	Bean[] beans1; //Bean array that contains the mock beans
 	
 
-	@Before
+    @Before
 	public void setup()
 	{
 		BCL=new BeanCounterLogic(9);
@@ -45,6 +45,77 @@ public class BeanCounterLogicTest {
 		assertTrue((int)numOfBeansField.get(BCL)==524);
 		assertTrue((int)counter.get(BCL)==0);
 	}
+
+	@Test
+	/**
+	 * check if getRemainingBenaCount returns the correct value
+	 *
+	 */
+	public void testGetRemainingBeanCount() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		Field beansField=BeanCounterLogic.class.getDeclaredField("_beans");
+		beansField.setAccessible(true);
+		beansField.set(BCL,beans1);
+		
+		for (int i=0;i<beans1.length-5;i++)
+			BCL.advanceStep();
+		
+		assertTrue(BCL.getRemainingBeanCount()==5);
+	}
+
+	@Test
+	/**
+	 * checks if the BCL returns the correct X value of a bean
+	 */
+	public void testGetInFlightBeanXPos() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		Mockito.when(beans1[0].getX()).thenReturn(4);
+		Mockito.when(beans1[1].getX()).thenReturn(7);
+		Field beansField=BeanCounterLogic.class.getDeclaredField("_beans");
+		beansField.setAccessible(true);
+		beansField.set(BCL,beans1);
+		for(int i=0;i<4;i++) //beans[0] should have a y coordinate at 3, beans[0] 7
+			BCL.advanceStep();
+	
+		assertTrue(BCL.getInFlightBeanXPos(3)==4);
+		assertTrue(BCL.getInFlightBeanXPos(4)==7);
+		
+	}
+
+	@Test
+	/**
+	 * check if reset() sets the beans array correctly
+	 */
+	public void testReset1() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+		Field beansField=BeanCounterLogic.class.getDeclaredField("_beans");
+		beansField.setAccessible(true);
+		beansField.set(BCL,beans1);
+
+		Bean[] testBeans=new Bean[24];
+		BCL.reset(testBeans);
+		
+		assertTrue(beansField.get(BCL)==testBeans);
+		
+	}
+
+	@Test
+	/**
+	 * check if reset() set _counter to 0
+	 */
+	public void testReset2() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+		Field beansField=BeanCounterLogic.class.getDeclaredField("_beans");
+		Field counterField=BeanCounterLogic.class.getDeclaredField("_counter");
+		beansField.setAccessible(true);
+		counterField.setAccessible(true);
+		beansField.set(BCL,beans1);
+
+		for(int i=0;i<beans1.length;i++)
+			BCL.advanceStep();
+
+		BCL.reset(null);
+
+		assertTrue(counterField.getInt(BCL)==0);
+		
+	}
+
 
 	@Test
 	/**
@@ -87,25 +158,10 @@ public class BeanCounterLogicTest {
 			BCL.advanceStep();	
 			Mockito.verify(beans1[i],Mockito.times(1)).move();
 		}
+	}
+
 	
 
-	}
-
-
-	@Test
-	/**
-	 * check if getRemainingBeans method return the correct value
-	 */
-	public void testGetRemainingBeanCount() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		Field beansField=BeanCounterLogic.class.getDeclaredField("_beans");
-		beansField.setAccessible(true);
-		beansField.set(BCL,beans1);
-		
-		for (int i=0;i<beans1.length-5;i++)
-			BCL.advanceStep();
-		
-		assertTrue(BCL.getRemainingBeanCount()==5);
-	}
 
 	@After
 	public void tearDown()

@@ -90,11 +90,12 @@ public class BeanCounterLogic {
 	 */
 	public double getAverageSlotBeanCount() {
 		// TODO: Implement
+		
 		return 0;
 	}
 
 	/**
-	 * Removes the lower half of all mmmmmmmmpomnmmbeans currently in slots, keeping only the
+	 * Removes the lower half of all beans currently in slots, keeping only the
 	 * upper half.
 	 */
 	public void upperHalf() {
@@ -115,6 +116,8 @@ public class BeanCounterLogic {
 	 */
 	public void reset(Bean[] beans) {
 		// TODO: Implement
+		_beans=beans;
+		_counter=0;
 	}
 
 	/**
@@ -123,8 +126,8 @@ public class BeanCounterLogic {
 	 * beginning, the machine starts with one bean at the top.
 	 */
 	public void repeat() {
-
 		// TODO: Implement
+		
 	}
 
 	/**
