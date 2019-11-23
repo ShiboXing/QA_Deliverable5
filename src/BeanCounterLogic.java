@@ -108,14 +108,19 @@ public class BeanCounterLogic {
 	 */
 	public void upperHalf() {
 		// TODO: Implement
+		for(int i=0;i<_slots.length/2;i++) 
+			_slots[i]=0;
+		
 	}
 
 	/**
 	 * Removes the upper half of all beans currently in slots, keeping only the
 	 * lower half.
 	 */
-	public void lowerHalf() {
+	public void lowerHalf() { 
 		// TODO: Implement
+		for(int i=_slots.length/2;i<_slots.length;i++) 
+			_slots[i]=0;
 	}
 
 	/**

@@ -123,8 +123,39 @@ public class BeanCounterLogicTest {
 		for(int i =0;i<slots.length;i++)
 			slots[i]=1;
 		assertTrue(BCL.getAverageSlotBeanCount()==1);
-	}
+	 }
+	 
+	 @Test
+	 /**
+	  * check if upperHalf() resets the lower half of beanCount array properly 
+	  */
+	 public void testUpperHalf() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		Field slotsField=BeanCounterLogic.class.getDeclaredField("_slots");
+		slotsField.setAccessible(true);
+		int[] slots={1,23,24,14,45,25,98,57,400,343,97,535,13,24,53,5,352,52,42,424};
+		slotsField.set(BCL,slots);
+		
+		BCL.upperHalf();
+		for(int i=0;i<slots.length/2;i++) assertTrue(slots[i]==0);
 
+	 }
+
+	 @Test
+	 /**
+	  * check if the lowerHalf() reset the higher half of beanCount array properly
+	  */
+	 public void testLowerHalf() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		Field slotsField=BeanCounterLogic.class.getDeclaredField("_slots");
+		slotsField.setAccessible(true);
+		int[] slots={1,23,24,14,45,25,98,57,400,343,97,535,13,24,53,5,352,52,42,424};
+		slotsField.set(BCL,slots);
+		BCL.lowerHalf();
+		
+		for(int i=slots.length/2;i<slots.length;i++) assertTrue(slots[i]==0);
+		
+
+		
+	 }
 
 
 
