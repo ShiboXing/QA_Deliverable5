@@ -1,3 +1,4 @@
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -37,6 +38,8 @@ public class BeanCounterLogic {
 	private Bean[] _beans;
 	private int _counter; //a pointer point to beans array that indicates the last bean released to the machine.
 	
+	private int[] _slots; //record the number of beans in each slot
+	
 	
 	/**
 	 * Constructor - creates the bean counter logic object that implements the core
@@ -48,6 +51,7 @@ public class BeanCounterLogic {
 		// TODO: Implement
 		_numOfSlots=slotCount;
 		_counter=0;
+		_slots=new int[_numOfSlots];
 	}
 
 	/**
@@ -68,8 +72,10 @@ public class BeanCounterLogic {
 	 */
 	public int getInFlightBeanXPos(int yPos) {
 		// TODO: Implement
-		
-		return NO_BEAN_IN_YPOS;
+		//assertTrue(yPos<_numOfSlots);
+		if (yPos>_counter || _counter+yPos>=100)
+			return NO_BEAN_IN_YPOS;
+		return _beans[_counter-yPos].getX();
 	}
 
 	/**
@@ -141,9 +147,12 @@ public class BeanCounterLogic {
 	public boolean advanceStep() {
 		if(_counter<_beans.length){
 			_counter++;
-			for(int i=Math.max(_counter-_numOfSlots,0);i<_counter;i++)
-				_beans[i].move();
+			for(int i=Math.max(_counter-_numOfSlots,0);i<_counter;i++){
 
+				_beans[i].move();
+				if(_beans[i].getY()==_numOfSlots-1) // the bean has entered a slot
+					_slots[i]++;	
+			}
 			return true;
 		}
 

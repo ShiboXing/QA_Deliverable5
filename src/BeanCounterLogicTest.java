@@ -36,13 +36,23 @@ public class BeanCounterLogicTest {
 	 * Test the constructor, check if the parameter is assigned correctly.
 	 */
 	public void TestBeanCounterLogic() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
-		Field numOfBeansField=BeanCounterLogic.class.getDeclaredField("_numOfSlots");
+		Field numOfSlotsField=BeanCounterLogic.class.getDeclaredField("_numOfSlots");
+		
 		Field counter=BeanCounterLogic.class.getDeclaredField("_counter");
 		counter.setAccessible(true);
-		numOfBeansField.setAccessible(true);
+		numOfSlotsField.setAccessible(true);	
+		
+		Field slotsField=BeanCounterLogic.class.getDeclaredField("_slots");
+		slotsField.setAccessible(true);
+
 		
 		BCL=new BeanCounterLogic(524);
-		assertTrue((int)numOfBeansField.get(BCL)==524);
+
+
+		assertTrue((int)numOfSlotsField.get(BCL)==524);
+		int[] slots=(int[])slotsField.get(BCL);
+		assertTrue(slots.length==524);
+		for(int i:slots) assertTrue(i==0);
 		assertTrue((int)counter.get(BCL)==0);
 	}
 
@@ -72,13 +82,19 @@ public class BeanCounterLogicTest {
 		Field beansField=BeanCounterLogic.class.getDeclaredField("_beans");
 		beansField.setAccessible(true);
 		beansField.set(BCL,beans1);
-		for(int i=0;i<4;i++) //beans[0] should have a y coordinate at 3, beans[0] 7
-			BCL.advanceStep();
-	
-		assertTrue(BCL.getInFlightBeanXPos(3)==4);
-		assertTrue(BCL.getInFlightBeanXPos(4)==7);
+
+		Field counter=BeanCounterLogic.class.getDeclaredField("_counter");
+		counter.setAccessible(true); 
+		counter.set(BCL, 4);//beans[1] should have a y coordinate at 3, beans[0] at 4
 		
+		//System.out.println(BCL.getInFlightBeanXPos(3)+" "+BCL.getInFlightBeanXPos(4));
+		assertTrue(BCL.getInFlightBeanXPos(3)==7);
+		assertTrue(BCL.getInFlightBeanXPos(4)==4);
 	}
+
+
+
+
 
 	@Test
 	/**
@@ -138,7 +154,6 @@ public class BeanCounterLogicTest {
 
 		for(int i =0;i<100;i++) 
 			assertFalse(BCL.advanceStep());
-
 		
 		assertTrue(counterField.getInt(BCL)==beans1.length); //BCL's counter won't increment after reaching the beans array length
 	}
@@ -160,7 +175,30 @@ public class BeanCounterLogicTest {
 		}
 	}
 
+	@Test
+	/**
+	 * check if advanceStep correctly places bean inside a slot at the bottom level
+	 */
+	public void testAdvanceStep3() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		Field beansField=BeanCounterLogic.class.getDeclaredField("_beans");
+		beansField.setAccessible(true);
+		beansField.set(BCL,beans1);
+		Field SlotNumField=BeanCounterLogic.class.getDeclaredField("_numOfSlots");
+		SlotNumField.setAccessible(true);
+		int slotNum=SlotNumField.getInt(BCL);
+		Mockito.when(beans1[0].getY()).thenReturn(slotNum-1); //at the slot level
+		Mockito.when(beans1[0].getX()).thenReturn(4);
+
+		Field slotsField=BeanCounterLogic.class.getDeclaredField("_slots");
+		slotsField.setAccessible(true);
+		int[] slots=(int[]) slotsField.get(BCL); //retrieve the slots array
+
+
+		assertTrue(slots[0]==0);
+		BCL.advanceStep(); //increment the slot count
+		assertTrue(slots[0]==1);
 	
+	}
 
 
 	@After
