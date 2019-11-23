@@ -86,7 +86,8 @@ public class BeanCounterLogic {
 	 */
 	public int getSlotBeanCount(int i) {
 		// TODO: Implement
-		return 0;
+		
+		return _slots[i];
 	}
 
 	/**

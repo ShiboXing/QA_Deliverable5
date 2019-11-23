@@ -92,6 +92,19 @@ public class BeanCounterLogicTest {
 		assertTrue(BCL.getInFlightBeanXPos(4)==4);
 	}
 
+	@Test
+	/**
+	 * check if getSlotBeanCount returns the correct bean number in a slot
+	 */
+	public void testGetSlotBeanCount() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		Field slotsField=BeanCounterLogic.class.getDeclaredField("_slots");
+		slotsField.setAccessible(true);
+		int[] slots=new int[20];
+		slots[13]=6666;
+		slotsField.set(BCL,slots);
+		
+		assertTrue(BCL.getSlotBeanCount(13)==6666);
+	}
 
 
 
