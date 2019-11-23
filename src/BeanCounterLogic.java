@@ -61,7 +61,7 @@ public class BeanCounterLogic {
 	 */
 	public int getRemainingBeanCount() {
 		// TODO: Implement
-		return _beans.length-_counter;
+		return Math.max(0, _beans.length-_counter);
 	}
 
 	/**
@@ -73,7 +73,8 @@ public class BeanCounterLogic {
 	public int getInFlightBeanXPos(int yPos) {
 		// TODO: Implement
 		//assertTrue(yPos<_numOfSlots);
-		if (yPos>_counter || _counter+yPos>=100)
+
+		if (_counter-yPos<0 || _counter-yPos>=_beans.length)
 			return NO_BEAN_IN_YPOS;
 		return _beans[_counter-yPos].getX();
 	}
@@ -141,7 +142,7 @@ public class BeanCounterLogic {
 	public void repeat() {
 		// TODO: Implement
 		for(int i=0;i<_slots.length;i++) _slots[i]=0;
-		for(int i=0;i<_counter;i++)
+		for(int i=0;i<_beans.length;i++)
 		{ 
 			_beans[i].reset();		
 		}
@@ -157,13 +158,16 @@ public class BeanCounterLogic {
 	 *         means the machine is finished.
 	 */
 	public boolean advanceStep() {
-		if(_counter<_beans.length){
+		if(_counter-_numOfSlots<_beans.length){
 			_counter++;
-			for(int i=Math.max(_counter-_numOfSlots,0);i<_counter;i++){
+			
+			for(int i=Math.max(_counter-_numOfSlots,0);i<Math.min(_counter,_beans.length);i++){
 
+				
 				_beans[i].move();
+
 				if(_beans[i].getY()==_numOfSlots-1) // the bean has entered a slot
-					_slots[i]++;	
+					_slots[_beans[i].getX()]++;	
 			}
 			return true;
 		}

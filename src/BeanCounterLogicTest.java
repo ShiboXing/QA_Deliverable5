@@ -254,11 +254,14 @@ public class BeanCounterLogicTest {
 
 		Field counterField=BeanCounterLogic.class.getDeclaredField("_counter");
 		Field beansField=BeanCounterLogic.class.getDeclaredField("_beans");
+		Field slotsField=BeanCounterLogic.class.getDeclaredField("_slots");
 		beansField.setAccessible(true);
 		counterField.setAccessible(true);
+		slotsField.setAccessible(true);
+		int[] slots=(int[])slotsField.get(BCL);
 		beansField.set(BCL,beans1);
 		
-		for (int i=0;i<beans1.length;i++)
+		for (int i=0;i<beans1.length+slots.length;i++)
 		{
 			BCL.advanceStep();
 			assertTrue(counterField.getInt(BCL)==i+1); //checks if the counter increments 
@@ -267,7 +270,7 @@ public class BeanCounterLogicTest {
 		for(int i =0;i<100;i++) 
 			assertFalse(BCL.advanceStep());
 		
-		assertTrue(counterField.getInt(BCL)==beans1.length); //BCL's counter won't increment after reaching the beans array length
+		assertTrue(counterField.getInt(BCL)==beans1.length+slots.length); //BCL's counter won't increment after reaching the beans array length
 	}
 
 	@Test
@@ -298,17 +301,20 @@ public class BeanCounterLogicTest {
 		Field SlotNumField=BeanCounterLogic.class.getDeclaredField("_numOfSlots");
 		SlotNumField.setAccessible(true);
 		int slotNum=SlotNumField.getInt(BCL);
-		Mockito.when(beans1[0].getY()).thenReturn(slotNum-1); //at the slot level
-		Mockito.when(beans1[0].getX()).thenReturn(4);
+		
+		//create a stubbing on beans1[0] that puts this bean one level above the slots
+		Mockito.when(beans1[0].getY()).thenReturn(slotNum-1); 
+		Mockito.when(beans1[0].getX()).thenReturn(4); //make it go to slot 4
 
 		Field slotsField=BeanCounterLogic.class.getDeclaredField("_slots");
 		slotsField.setAccessible(true);
 		int[] slots=(int[]) slotsField.get(BCL); //retrieve the slots array
 
 
-		assertTrue(slots[0]==0);
-		BCL.advanceStep(); //increment the slot count
-		assertTrue(slots[0]==1);
+		assertTrue(slots[4]==0);
+		BCL.advanceStep(); 
+		Mockito.verify(beans1[0],Mockito.times(1)).move();
+		assertTrue(slots[4]==1);
 	
 	}
 

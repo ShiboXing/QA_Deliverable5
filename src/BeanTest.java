@@ -27,10 +27,6 @@ public class BeanTest {
 	@Test
 	/**
 	 * check if the constructor correctly assigns the variables to Bean object
-	 * @throws NoSuchFieldException
-	 * @throws SecurityException
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
 	 */
 	public void testBean1() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
 	{
@@ -127,7 +123,7 @@ public class BeanTest {
 			
 			bean.move();
 			if(i<skill)
-				assertTrue(xField.getInt(bean)==i+1); //x coordinate is always 0
+				assertTrue(xField.getInt(bean)==i+1); //should go right
 			else
 				assertTrue(xField.getInt(bean)==skill);
 			assertTrue(yField.getInt(bean)==i); //y coordinate increments by 1 each time
@@ -158,6 +154,31 @@ public class BeanTest {
 		assertTrue(bean.getY()==7);
 	}
 
+	@Test
+	/** 
+	 * check if reset() properly reinitializes the fields of a bean
+	 */
+	public void testReset() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		bean=new Bean(true,new Random());
+		Field yField=Bean.class.getDeclaredField("_y");
+		Field xField=Bean.class.getDeclaredField("_x");
+		Field timesField=Bean.class.getDeclaredField("_times");
+		yField.setAccessible(true);
+		xField.setAccessible(true);
+		timesField.setAccessible(true);
+		
+		yField.setInt(bean,10);
+		xField.setInt(bean,6);
+		timesField.setInt(bean,5);
+
+		bean.reset();
+
+		assertTrue(yField.getInt(bean)==-1);
+		assertTrue(xField.getInt(bean)==0);
+		assertTrue(timesField.getInt(bean)==0);
+
+
+	}
 
 	@After
 	public void teardown(){

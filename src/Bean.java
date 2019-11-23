@@ -27,7 +27,7 @@ public class Bean {
 	private boolean _mode; // 1 if luck, 0 if skill
 	private Random _rand;
 	private int _skill=-1; //will be assigned if skill mode is chosen
-	private int times=0; //the number of falls the bean has taken, going left if less than skill
+	private int _times=0; //the number of falls the bean has taken, going left if less than skill
 
 	private int _x;
 	private int _y;
@@ -43,8 +43,7 @@ public class Bean {
 		// TODO: Implement
 		_mode=isLuck;
 		_rand=rand;	
-		if (!_mode)
-			_skill=rand.nextInt(BOUND);
+		_skill=rand.nextInt(BOUND);
 		_x=0;
 		_y=-1;
 	}  
@@ -61,8 +60,10 @@ public class Bean {
 				res= true;
 		}
 		else //skill
-			if(times++ >=_skill) 
+		{
+			if(_times++ >=_skill) 
 				res= true;
+		}
 		if(!res)
 			_x++;
 		_y++;
@@ -90,6 +91,7 @@ public class Bean {
 	public void reset(){
 		_x=0;
 		_y=-1;
+		_times=0;
 	}
 
 }
