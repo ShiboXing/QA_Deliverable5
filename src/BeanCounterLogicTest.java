@@ -106,6 +106,25 @@ public class BeanCounterLogicTest {
 		assertTrue(BCL.getSlotBeanCount(13)==6666);
 	}
 
+	@Test
+	/**
+	 * check if AverageSlotBeanCount returns the correct average bean number
+	 */
+	public void testAverageSlotBeanCount() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		Field slotsField=BeanCounterLogic.class.getDeclaredField("_slots");
+		slotsField.setAccessible(true);
+		int[] slots=new int[66];
+		slotsField.set(BCL,slots);
+		for(int i =0;i<slots.length;i++)
+			slots[i]=4;
+		
+		assertTrue(BCL.getAverageSlotBeanCount()==4);
+
+		for(int i =0;i<slots.length;i++)
+			slots[i]=1;
+		assertTrue(BCL.getAverageSlotBeanCount()==1);
+	}
+
 
 
 

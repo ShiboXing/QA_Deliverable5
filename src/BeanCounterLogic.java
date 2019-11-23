@@ -86,7 +86,6 @@ public class BeanCounterLogic {
 	 */
 	public int getSlotBeanCount(int i) {
 		// TODO: Implement
-		
 		return _slots[i];
 	}
 
@@ -97,8 +96,10 @@ public class BeanCounterLogic {
 	 */
 	public double getAverageSlotBeanCount() {
 		// TODO: Implement
+		double sum=0.0;
+		for(int i:_slots) sum+=i;
+		return sum/_slots.length;
 		
-		return 0;
 	}
 
 	/**
