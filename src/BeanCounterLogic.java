@@ -39,6 +39,7 @@ public class BeanCounterLogic {
 	private int _counter; //a pointer point to beans array that indicates the last bean released to the machine.
 	
 	private int[] _slots; //record the number of beans in each slot
+	private int _beanCount;
 	
 	
 	/**
@@ -52,6 +53,7 @@ public class BeanCounterLogic {
 		_numOfSlots=slotCount;
 		_counter=0;
 		_slots=new int[_numOfSlots];
+		_beanCount=0;
 	}
 
 	/**
@@ -98,8 +100,8 @@ public class BeanCounterLogic {
 	public double getAverageSlotBeanCount() {
 		// TODO: Implement
 		double sum=0.0;
-		for(int i:_slots) sum+=i;
-		return sum/_slots.length;
+		for(int i=0;i<_slots.length;i++) sum+=i*_slots[i];
+		return sum/_beanCount;
 		
 	}
 
@@ -132,6 +134,7 @@ public class BeanCounterLogic {
 		// TODO: Implement
 		_beans=beans;
 		_counter=0;
+		_beanCount=0;
 	}
 
 	/**
@@ -147,6 +150,7 @@ public class BeanCounterLogic {
 			_beans[i].reset();		
 		}
 		_counter=0;
+		_beanCount=0;
 	}
 
 	/**
@@ -159,8 +163,10 @@ public class BeanCounterLogic {
 	 */
 	public boolean advanceStep() {
 		if(_counter-_numOfSlots<_beans.length){
-			_counter++;
 			
+			_counter++;
+			_beanCount++;
+
 			for(int i=Math.max(_counter-_numOfSlots,0);i<Math.min(_counter,_beans.length);i++){
 
 				

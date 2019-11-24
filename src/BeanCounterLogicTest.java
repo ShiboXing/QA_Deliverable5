@@ -112,17 +112,19 @@ public class BeanCounterLogicTest {
 	 */
 	public void testAverageSlotBeanCount() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		Field slotsField=BeanCounterLogic.class.getDeclaredField("_slots");
+		Field beanCountField=BeanCounterLogic.class.getDeclaredField("_beanCount");
 		slotsField.setAccessible(true);
+		beanCountField.setAccessible(true);
 		int[] slots=new int[66];
 		slotsField.set(BCL,slots);
-		for(int i =0;i<slots.length;i++)
-			slots[i]=4;
-		
-		assertTrue(BCL.getAverageSlotBeanCount()==4);
+		for(int i =0;i<slots.length;i++) slots[i]=4;
+		beanCountField.set(BCL,4*slots.length);
 
-		for(int i =0;i<slots.length;i++)
-			slots[i]=1;
-		assertTrue(BCL.getAverageSlotBeanCount()==1);
+		assertTrue(BCL.getAverageSlotBeanCount()==32.5);
+
+		for(int i =0;i<slots.length;i++) slots[i]=0;
+		slots[41]=123;
+		assertTrue(BCL.getAverageSlotBeanCount()==123*41.0/(4*slots.length));
 	 }
 	 
 	 @Test
@@ -180,15 +182,19 @@ public class BeanCounterLogicTest {
 	public void testReset2() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		Field beansField=BeanCounterLogic.class.getDeclaredField("_beans");
 		Field counterField=BeanCounterLogic.class.getDeclaredField("_counter");
+		Field beanCountField=BeanCounterLogic.class.getDeclaredField("_beanCount");
 		beansField.setAccessible(true);
 		counterField.setAccessible(true);
+		beanCountField.setAccessible(true);
 		beansField.set(BCL,beans1);
+		beanCountField.set(BCL,100);
 
 		for(int i=0;i<beans1.length;i++)
 			BCL.advanceStep();
 
 		BCL.reset(null);
-
+		
+		assertTrue(beanCountField.getInt(BCL)==0);
 		assertTrue(counterField.getInt(BCL)==0);
 		
 	}
@@ -201,12 +207,14 @@ public class BeanCounterLogicTest {
 	public void testRepeat1() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		Field slotsField=BeanCounterLogic.class.getDeclaredField("_slots");
 		Field numberOfSlotsField=BeanCounterLogic.class.getDeclaredField("_numOfSlots");
+		Field beanCountField=BeanCounterLogic.class.getDeclaredField("_beanCount");
 		Field counterField=BeanCounterLogic.class.getDeclaredField("_counter");
 		Field BeansField=BeanCounterLogic.class.getDeclaredField("_beans");
 		slotsField.setAccessible(true);
 		numberOfSlotsField.setAccessible(true);
 		counterField.setAccessible(true);
 		BeansField.setAccessible(true);
+		beanCountField.setAccessible(true);
 
 		
 
@@ -215,10 +223,12 @@ public class BeanCounterLogicTest {
 		slotsField.set(BCL,slots);
 		numberOfSlotsField.set(BCL,slots.length);
 		counterField.set(BCL,5);
+		beanCountField.set(BCL,100);
 
 		BCL.repeat();
 
 		assertTrue(counterField.getInt(BCL)==0);
+		assertTrue(beanCountField.getInt(BCL)==0);
 		for(int i:slots) assertTrue(i==0);
 
 	}
