@@ -186,18 +186,8 @@ public class BeanCounterLogic {
 		System.out.println("Usage: java BeanCounterLogic <number of beans> <luck | skill>");
 		System.out.println("Example: java BeanCounterLogic 400 luck");
 	}
-
-	/**
-	 * Auxiliary main method. Runs the machine in text mode with no bells and
-	 * whistles. It simply shows the slot bean count at the end. Also, when the
-	 * string "test" is passed to args[0], the program enters test mode. In test
-	 * mode, the Java Pathfinder model checking tool checks the logic of the machine
-	 * for a small number of beans and slots.
-	 * 
-	 * @param args args[0] is an integer bean count, args[1] is a string which is
-	 *             either luck or skill.
-	 */
-	public static void main(String[] args) {
+	
+	public static boolean runGame(String[] args) {
 		boolean luck;
 		int beanCount = 0;
 		int slotCount = 0;
@@ -238,23 +228,23 @@ public class BeanCounterLogic {
 			// 2. There should be no beans in-flight.
 			// 3. The number of in-slot beans should be equal to beanCount.
 			
-			return;
+			return true;
 		}
 
 		if (args.length != 2) {
 			showUsage();
-			return;
+			return true;
 		}
 
 		try {
 			beanCount = Integer.parseInt(args[0]);
 		} catch (NumberFormatException ne) {
 			showUsage();
-			return;
+			return true;
 		}
 		if (beanCount < 0) {
 			showUsage();
-			return;
+			return true;
 		}
 
 		if (args[1].equals("luck")) {
@@ -263,7 +253,7 @@ public class BeanCounterLogic {
 			luck = false;
 		} else {
 			showUsage();
-			return;
+			return true;
 		}
 		
 		slotCount = 10;
@@ -290,5 +280,22 @@ public class BeanCounterLogic {
 			System.out.print(logic.getSlotBeanCount(i) + " ");
 		}
 		System.out.println("");
+		return true;
 	}
+	
+
+	/**
+	 * Auxiliary main method. Runs the machine in text mode with no bells and
+	 * whistles. It simply shows the slot bean count at the end. Also, when the
+	 * string "test" is passed to args[0], the program enters test mode. In test
+	 * mode, the Java Pathfinder model checking tool checks the logic of the machine
+	 * for a small number of beans and slots.
+	 * 
+	 * @param args args[0] is an integer bean count, args[1] is a string which is
+	 *             either luck or skill.
+	 */
+	public static void main(String[] args) {
+		runGame(args);
+	}
+
 }

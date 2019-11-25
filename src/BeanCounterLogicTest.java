@@ -327,6 +327,32 @@ public class BeanCounterLogicTest {
 		assertTrue(slots[4]==1);
 	
 	}
+	
+	@Test
+	public void testMainLuck() {
+		String[] args = new String[2];
+		args[0] = "100";
+		args[1] = "luck";
+		
+		assertTrue(BCL.runGame(args));
+	}
+	
+	@Test
+	public void testMainSkill() {
+		String[] args = new String[2];
+		args[0] = "100";
+		args[1] = "luck";
+		
+		assertTrue(BCL.runGame(args));
+	}
+	
+	@Test
+	public void testMainTest() {
+		String[] args = new String[1];
+		args[0] = "test";
+		
+		assertTrue(BCL.runGame(args));
+	}
 
 
 	@After
