@@ -1,4 +1,5 @@
 import java.util.Random;
+import gov.nasa.jpf.annotation.FilterField;
 
 /**
  * Code by @author Wonsun Ahn
@@ -21,12 +22,14 @@ import java.util.Random;
 public class Bean {
 	// TODO: Add member methods and variables as needed 
 	
-	private static final double SKILL_AVERAGE = 4.5;	// MainPanel.SLOT_COUNT * 0.5;
-	private static final double SKILL_STDEV = 1.5;		// Math.sqrt(SLOT_COUNT * 0.5 * (1 - 0.5));
-	private static final int BOUND=(int)(SKILL_AVERAGE*2)+1;
+	@FilterField private static final double SKILL_AVERAGE = 4.5;	// MainPanel.SLOT_COUNT * 0.5;
+	@FilterField private static final double SKILL_STDEV = 1.5;		// Math.sqrt(SLOT_COUNT * 0.5 * (1 - 0.5));
+	@FilterField private static final int BOUND=(int)(SKILL_AVERAGE*2)+1;
+	
+	@FilterField private Random _rand;
+	@FilterField private int _skill=-1; //will be assigned if skill mode is chosen
+	
 	private boolean _mode; // 1 if luck, 0 if skill
-	private Random _rand;
-	private int _skill=-1; //will be assigned if skill mode is chosen
 	private int _times=0; //the number of falls the bean has taken, going left if less than skill
 
 	private int _x;
@@ -45,9 +48,11 @@ public class Bean {
 		_rand=rand;	
 		_skill=rand.nextInt(BOUND);
 		_x=0;
-		_y=-1;
+		_y=0;
 	}  
 
+
+	
 	/**
 	 * move the bean to the next position
 	 * returns whether the bean moved left.

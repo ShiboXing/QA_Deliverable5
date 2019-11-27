@@ -3,6 +3,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
+import gov.nasa.jpf.vm.Verify;
+import gov.nasa.jpf.annotation.FilterField;
 
 /**
  * Code by @author Wonsun Ahn
@@ -32,14 +34,13 @@ public class BeanCounterLogic {
 	// TODO: Add member methods and variables as needed
 
 	// No bean in that particular Y coordinate
-	public static final int NO_BEAN_IN_YPOS = -1;
-	
+	@FilterField public static final int NO_BEAN_IN_YPOS = -1;
 	private int _numOfSlots;
-	private Bean[] _beans;
+	@FilterField private int[] _slots; //record the number of beans in each slot
+	private int _beanCount;
+	@FilterField private Bean[] _beans;
 	private int _counter; //a pointer point to beans array that indicates the last bean released to the machine.
 	
-	private int[] _slots; //record the number of beans in each slot
-	private int _beanCount;
 	
 	
 	/**
@@ -100,8 +101,12 @@ public class BeanCounterLogic {
 	public double getAverageSlotBeanCount() {
 		// TODO: Implement
 		double sum=0.0;
-		for(int i=0;i<_slots.length;i++) sum+=i*_slots[i];
-		return sum/_beanCount;
+		int count=0;
+		for(int i=0;i<_slots.length;i++) {
+			sum+=i*_slots[i];
+			count+=_slots[i];
+		}
+		return sum/count;
 		
 	}
 
@@ -162,18 +167,18 @@ public class BeanCounterLogic {
 	 *         means the machine is finished.
 	 */
 	public boolean advanceStep() {
-		if(_counter-_numOfSlots<_beans.length){
+		if(_beans.length!=0 && _counter-_numOfSlots<_beans.length){
 			
 			_counter++;
 			_beanCount++;
 
 			for(int i=Math.max(_counter-_numOfSlots,0);i<Math.min(_counter,_beans.length);i++){
-
-				
 				_beans[i].move();
 
-				if(_beans[i].getY()==_numOfSlots-1) // the bean has entered a slot
-					_slots[_beans[i].getX()]++;	
+				//System.out.printf("beans[%d].y:%d beans[%d].x: %d\n",i,_beans[i].getY(),i,_beans[i].getX());
+				if( _beans[i].getY() == Math.max(1,_numOfSlots-1))
+					_slots[Math.min(_beans[i].getX(),_slots.length-1)]++; //in case there is only one slot
+					
 			}
 			return true;
 		}
@@ -189,8 +194,9 @@ public class BeanCounterLogic {
 	
 	public static boolean runGame(String[] args) {
 		boolean luck;
-		int beanCount = 0;
-		int slotCount = 0;
+		int beanCount = Verify.getInt(0,3);
+		int slotCount =Verify.getInt(1,5);
+		//System.out.println(beanCount+" "+slotCount);
 
 		if (args.length == 1 && args[0].equals("test")) {
 			// TODO: Verify the model checking passes for beanCount values 0-3 and slotCount
@@ -219,15 +225,33 @@ public class BeanCounterLogic {
 					assert xPos == BeanCounterLogic.NO_BEAN_IN_YPOS || (xPos >= 0 && xPos <= yPos);
 				}
 
+				
 				// TODO: Check invariant property: the sum of remaining, in-flight, and in-slot
 				// beans always have to be equal to beanCount
+				int InFlightSum=0;
+				for (int yPos=1;yPos<slotCount-1;yPos++)
+					InFlightSum += logic.getInFlightBeanXPos(yPos)!=logic.NO_BEAN_IN_YPOS ? 1 : 0;
+				int SlotSum=0;
+				for (int i =0;i<slotCount;i++)
+					SlotSum+=logic._slots[i];
+				//System.out.println("counter: "+logic._counter);
+				assert logic.getRemainingBeanCount()+InFlightSum+SlotSum == beanCount;
 				
 			}
 			// TODO: Check invariant property: when the machine finishes,
 			// 1. There should be no remaining beans.
+			assert logic.getRemainingBeanCount()==0;
 			// 2. There should be no beans in-flight.
+			int InFlightSum=0;
+			for (int yPos=1;yPos<slotCount-1;yPos++)
+					InFlightSum += logic.getInFlightBeanXPos(yPos)!=logic.NO_BEAN_IN_YPOS ? 1 : 0;
+			assert InFlightSum==0;
 			// 3. The number of in-slot beans should be equal to beanCount.
-			
+			int SlotSum=0;
+			for (int i =0;i<slotCount;i++)
+				SlotSum+=logic._slots[i];
+			assert SlotSum==beanCount;
+
 			return true;
 		}
 
