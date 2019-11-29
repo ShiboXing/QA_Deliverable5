@@ -1,5 +1,6 @@
-import java.util.Random;
+
 import gov.nasa.jpf.annotation.FilterField;
+import java.util.Random;
 
 /**
  * Code by @author Wonsun Ahn
@@ -21,34 +22,35 @@ import gov.nasa.jpf.annotation.FilterField;
 
 public class Bean {
 	// TODO: Add member methods and variables as needed 
+	// MainPanel.SLOT_COUNT * 0.5;
+	@FilterField private static final double SKILL_AVERAGE = 4.5;
+	// Math.sqrt(SLOT_COUNT * 0.5 * (1 - 0.5));
+	@FilterField private static final double SKILL_STDEV = 1.5;		
+	@FilterField private static final int BOUND = (int)(SKILL_AVERAGE * 2) + 1;
 	
-	@FilterField private static final double SKILL_AVERAGE = 4.5;	// MainPanel.SLOT_COUNT * 0.5;
-	@FilterField private static final double SKILL_STDEV = 1.5;		// Math.sqrt(SLOT_COUNT * 0.5 * (1 - 0.5));
-	@FilterField private static final int BOUND=(int)(SKILL_AVERAGE*2)+1;
-	
-	@FilterField private Random _rand;
-	@FilterField private int _skill=-1; //will be assigned if skill mode is chosen
-	
-	private boolean _mode; // 1 if luck, 0 if skill
-	private int _times=0; //the number of falls the bean has taken, going left if less than skill
+	@FilterField private final Random _rand;
+	@FilterField
+	private int _skill = -1; // will be assigned if skill mode is chosen
+
+	private final boolean _mode; // 1 if luck, 0 if skill
+	private int _times = 0; // the number of falls the bean has taken, going left if less than skill
 
 	private int _x;
 	private int _y;
-	
-	
+
 	/**
 	 * Constructor - creates a bean in either luck mode or skill mode.
 	 * 
-	 * @param isLuck	whether the bean is in luck mode
-	 * @param rand      the random number generator
+	 * @param isLuck whether the bean is in luck mode
+	 * @param rand   xthe random number generator
 	 */
-	Bean(boolean isLuck, Random rand) {
+	Bean(final boolean isLuck, final Random rand) {
 		// TODO: Implement
-		_mode=isLuck;
-		_rand=rand;	
-		_skill=rand.nextInt(BOUND);
-		_x=0;
-		_y=0;
+		_mode = isLuck;
+		_rand = rand;	
+		_skill = rand.nextInt(BOUND);
+		_x = 0;
+		_y = 0;
 	}  
 
 
@@ -57,46 +59,48 @@ public class Bean {
 	 * move the bean to the next position
 	 * returns whether the bean moved left.
 	 */
-	public boolean move(){
-		boolean res=false;
+	public boolean move() {
+		boolean res = false;
 
-		if(_mode) {//luck
-			if(_rand.nextInt(BOUND)<5) 
-				res= true;
+		if (_mode) { //luck
+			if (_rand.nextInt(BOUND) < 5) {
+				res = true;
+			}
+		} else { //skill
+			if (_times++ >= _skill) {
+				res = true;
+			}
 		}
-		else //skill
-		{
-			if(_times++ >=_skill) 
-				res= true;
-		}
-		if(!res)
+		if (!res) {
 			_x++;
+		}
 		_y++;
 
 		return res;
 		
 	}
+
 	/**
 	 * return the x coordinate
 	 */
-	public int getX(){
+	public int getX() {
 		return _x;
 	}
 
 	/**
 	 * return the y coordinate
 	 */
-	public int getY(){
+	public int getY() {
 		return _y;
 	}
 
 	/**
 	 * resets the bean to the initial position
 	 */
-	public void reset(){
-		_x=0;
-		_y=-1;
-		_times=0;
+	public void reset() {
+		_x = 0;
+		_y = -1;
+		_times = 0;
 	}
 
 }
