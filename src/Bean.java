@@ -99,7 +99,7 @@ public class Bean {
 	 */
 	public void reset() {
 		_x = 0;
-		_y = -1;
+		_y = 0;
 		_times = 0;
 	}
 

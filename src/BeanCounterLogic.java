@@ -64,7 +64,7 @@ public class BeanCounterLogic {
 	 */
 	public int getRemainingBeanCount() {
 		// TODO: Implement
-		return Math.max(0, _beans.length - _counter);
+		return Math.max(0, _beans.length - _counter - 1);
 	}
 
 	/**
@@ -174,7 +174,7 @@ public class BeanCounterLogic {
 	 *         means the machine is finished.
 	 */
 	public boolean advanceStep() {
-		if (_beans.length != 0 && _counter < _beans.length + _numOfSlots - 2) {
+		if (_beans.length != 0 && _counter < _beans.length + _numOfSlots) {
 
 			_counter++;
 			_beanCount++;
@@ -213,9 +213,9 @@ public class BeanCounterLogic {
 		if (args.length == 1 && args[0].equals("test")) {
 			// TODO: Verify the model checking passes for beanCount values 0-3 and slotCount
 			// values 1-5 using the JPF Verify API.
-			beanCount = 2;//Verify.getInt(0, 3);
-			slotCount = 2;//Verify.getInt(1, 5);
-			// System.out.println(beanCount+" "+slotCount);
+			beanCount = Verify.getInt(0, 3);
+			slotCount = Verify.getInt(1, 5);
+			//System.out.println(beanCount+" "+slotCount);
 
 			// Create the internal logic
 			final BeanCounterLogic logic = new BeanCounterLogic(slotCount);
@@ -227,10 +227,9 @@ public class BeanCounterLogic {
 			// Initialize the logic with the beans
 			logic.reset(beans);
 
+
 			while (true) {
-				if (!logic.advanceStep()) {
-					break;
-				}
+				
 
 				// Checks invariant property: all positions of in-flight beans have to be
 				// legal positions in the logical coordinate system.
@@ -242,7 +241,7 @@ public class BeanCounterLogic {
 				// TODO: Check invariant property: the sum of remaining, in-flight, and in-slot
 				// beans always have to be equal to beanCount
 				int InFlightSum = 0;
-				for (int yPos = 1; yPos < slotCount - 1; yPos++) {
+				for (int yPos = 0; yPos < Math.max(1,slotCount - 1); yPos++) {
 					InFlightSum += logic.getInFlightBeanXPos(yPos) != logic.NO_BEAN_IN_YPOS ? 1 : 0;
 				}
 				int SlotSum = 0;
@@ -250,8 +249,13 @@ public class BeanCounterLogic {
 					SlotSum += logic._slots[i];
 				}
 				//System.out.println("remaining: "+logic.getRemainingBeanCount());
-				// System.out.println("counter: "+logic._counter);
+				//System.out.println(logic.getRemainingBeanCount() + " " + InFlightSum + " " + SlotSum);
+				//System.out.println("counter: "+logic._counter);
 				assert logic.getRemainingBeanCount() + InFlightSum + SlotSum == beanCount;
+
+				if (!logic.advanceStep()) {
+					break;
+				}
 
 			}
 
@@ -269,6 +273,8 @@ public class BeanCounterLogic {
 			for (int i = 0; i < slotCount; i++) {
 				SlotSum += logic._slots[i];
 			}
+
+			//System.out.println("final SlotSum:" + SlotSum);
 			assert SlotSum == beanCount;
 
 			return true;
@@ -311,17 +317,14 @@ public class BeanCounterLogic {
 		// Initialize the logic with the beans
 		logic.reset(beans);
 
-		// Perform the experiment
-		for (int i = 0; i < 1000; i++) {
-			logic.advanceStep();
-		}
-		/*
+		
+		
 		while (true) {
 			if (!logic.advanceStep()) {
 				break;
 			}
 		}
-		*/
+		
 		// display experimental results
 		System.out.println("Slot bean counts:");
 		for (int i = 0; i < slotCount; i++) {
