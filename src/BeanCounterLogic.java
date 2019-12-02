@@ -54,7 +54,7 @@ public class BeanCounterLogic {
 		_numOfSlots = slotCount;
 		_counter = 0;
 		_slots = new int[_numOfSlots];
-		_beanCount = 0;
+		_beanCount = 0;	
 	}
 
 	/**
@@ -143,7 +143,7 @@ public class BeanCounterLogic {
 		// TODO: Implement
 		_beans = beans;
 		_counter = 0;
-		_beanCount = 0;
+		_beanCount = beans.length;
 		for (int i = 0; i < _slots.length; i++) {
 			_slots[i] = 0;
 		}
