@@ -163,7 +163,6 @@ public class BeanCounterLogic {
 			_beans[i].reset();
 		}
 		_counter = 0;
-		_beanCount = 0;
 	}
 
 	/**
