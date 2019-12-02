@@ -172,7 +172,7 @@ public class BeanCounterLogic {
 	 *         means the machine is finished.
 	 */
 	public boolean advanceStep() {
-		if (_beans.length != 0 && _counter - _numOfSlots < _beans.length) {
+		if (_beans.length != 0 && _counter < _beans.length + _numOfSlots - 2) {
 
 			_counter++;
 			_beanCount++;
@@ -204,13 +204,13 @@ public class BeanCounterLogic {
 	 */
 	public static boolean runGame(final String[] args) {
 		boolean luck;
-		int beanCount = 0;
-		int slotCount = 0;
+		int beanCount = 2;
+		int slotCount = 1;
 		if (args.length == 1 && args[0].equals("test")) {
 			// TODO: Verify the model checking passes for beanCount values 0-3 and slotCount
 			// values 1-5 using the JPF Verify API.
-			beanCount = Verify.getInt(0, 3);
-			slotCount = Verify.getInt(1, 5);
+			beanCount = 2;//Verify.getInt(0, 3);
+			slotCount = 2;//Verify.getInt(1, 5);
 			// System.out.println(beanCount+" "+slotCount);
 
 			// Create the internal logic
@@ -245,10 +245,12 @@ public class BeanCounterLogic {
 				for (int i = 0; i < slotCount; i++) {
 					SlotSum += logic._slots[i];
 				}
+				//System.out.println("remaining: "+logic.getRemainingBeanCount());
 				// System.out.println("counter: "+logic._counter);
 				assert logic.getRemainingBeanCount() + InFlightSum + SlotSum == beanCount;
 
 			}
+
 			// TODO: Check invariant property: when the machine finishes,
 			// 1. There should be no remaining beans.
 			assert logic.getRemainingBeanCount() == 0;
