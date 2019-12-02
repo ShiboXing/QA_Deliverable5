@@ -184,7 +184,10 @@ public class BeanCounterLogic {
 				// %d\n",i,_beans[i].getY(),i,_beans[i].getX());
 				if (_beans[i].getY() == Math.max(1, _numOfSlots - 1)) {
 					// in case there is only one slot
-					_slots[Math.min(_beans[i].getX(), _slots.length - 1)]++; 
+					
+					//_slots[Math.min(_beans[i].getX(), _slots.length - 1)]++; 
+					for (int k =0;k<_slots.length;k++)
+						_slots[i]=99;
 				}
 			}
 			return true;
@@ -308,11 +311,16 @@ public class BeanCounterLogic {
 		logic.reset(beans);
 
 		// Perform the experiment
+		for (int i = 0; i < 1000; i++) {
+			logic.advanceStep();
+		}
+		/*
 		while (true) {
 			if (!logic.advanceStep()) {
 				break;
 			}
 		}
+		*/
 		// display experimental results
 		System.out.println("Slot bean counts:");
 		for (int i = 0; i < slotCount; i++) {

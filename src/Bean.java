@@ -48,7 +48,7 @@ public class Bean {
 		// TODO: Implement
 		_mode = isLuck;
 		_rand = rand;	
-		_skill = (int) Math.round(rand.nextGaussian() * SKILL_STDEV + SKILL_AVERAGE);
+		_skill = 5;// (int) Math.round(rand.nextGaussian() * SKILL_STDEV + SKILL_AVERAGE);
 		_x = 0;
 		_y = 0;
 	}  
