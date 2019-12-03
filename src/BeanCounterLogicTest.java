@@ -230,9 +230,9 @@ public class BeanCounterLogicTest {
 			BCL.advanceStep();
 		}
 
-		BCL.reset(null);
+		BCL.reset(beans1);
 		
-		assertTrue(beanCountField.getInt(BCL) == 0);
+		assertTrue(beanCountField.getInt(BCL) == beans1.length);
 		assertTrue(counterField.getInt(BCL) == 0);
 		
 	}
@@ -272,10 +272,14 @@ public class BeanCounterLogicTest {
 		BCL.repeat();
 
 		assertTrue(counterField.getInt(BCL) == 0);
-		assertTrue(beanCountField.getInt(BCL) == 0);
 		for (final int i:slots) {
             assertTrue(i == 0);
-        }
+		}
+
+		for (Bean b : beans1) {
+			Mockito.verify(b,Mockito.times(1)).reset();
+		}
+		
 
 	}
 
