@@ -117,10 +117,25 @@ public class BeanCounterLogic {
 	 */
 	public void upperHalf() {
 		// TODO: Implement
-		
-		for (int i = 0; i < _slots.length / 2; i++) {
-			_slots[i] = 0;
+		int beanCount = 0;
+		for (int i = 0; i < _slots.length; i++) {
+			beanCount += _slots[i];
 		}
+		
+		if (beanCount % 2 == 1) {
+			beanCount++;
+		}
+		beanCount /= 2;
+		for (int i = 0; i < _slots.length && beanCount != 0; i++) {
+			if (_slots[i] <= beanCount) {
+				beanCount -= _slots[i];
+				_slots[i] = 0;
+			} else if (_slots[i] > beanCount && beanCount != 0) {
+				_slots[i] -= beanCount;
+				beanCount = 0;
+			}
+		}
+		
 
 	}
 
@@ -130,8 +145,23 @@ public class BeanCounterLogic {
 	 */
 	public void lowerHalf() {
 		// TODO: Implement
-		for (int i = _slots.length / 2; i < _slots.length; i++) {
-			_slots[i] = 0;
+		int beanCount = 0;
+		for (int i = 0; i < _slots.length; i++) {
+			beanCount += _slots[i];
+		}
+		
+		if (beanCount % 2 == 1) {
+			beanCount++;
+		}
+		beanCount /= 2;
+		for (int i = _slots.length - 1; i >= 0 && beanCount != 0; i--) {
+			if (_slots[i] <= beanCount) {
+				beanCount -= _slots[i];
+				_slots[i] = 0;
+			} else if (_slots[i] > beanCount && beanCount != 0) {
+				_slots[i] -= beanCount;
+				beanCount = 0;
+			}
 		}
 	}
 

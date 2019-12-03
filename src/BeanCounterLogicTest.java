@@ -154,17 +154,17 @@ public class BeanCounterLogicTest {
 	  */
      public void testUpperHalf() throws NoSuchFieldException,
             SecurityException, IllegalArgumentException, IllegalAccessException {
-        final Field slotsField = BeanCounterLogic
-            .class.getDeclaredField("_slots");
+			final Field slotsField = BeanCounterLogic
+			.class.getDeclaredField("_slots");
 		slotsField.setAccessible(true);
-        final int[] slots = {1,23,24,14,45,25,98,57,
-            400,343,97,535,13,24,53,5,352,52,42,424};
+		final int[] slots = {5,5,5,5,6,5,5,5,5};
+		final int[] test_slots = {0,0,0,0,3,5,5,5,5};
 		slotsField.set(BCL,slots);
+		BCL.lowerHalf();
 		
-		BCL.upperHalf();
-		for (int i = 0;i < slots.length / 2;i++) {
-            assertTrue(slots[i] == 0);
-        }
+		for (int i = 0;i < slots.length;i++) {  
+				assertTrue(slots[i] == test_slots[i]);
+		}
 
 	 }
 
@@ -177,13 +177,13 @@ public class BeanCounterLogicTest {
         final Field slotsField = BeanCounterLogic
             .class.getDeclaredField("_slots");
 		slotsField.setAccessible(true);
-        final int[] slots = {1,23,24,14,45,25,98,57,
-            400,343,97,535,13,24,53,5,352,52,42,424};
+        final int[] slots = {5,5,5,5,6,5,5,5,5};
+		final int[] test_slots = {5,5,5,5,3,0,0,0,0};
 		slotsField.set(BCL,slots);
 		BCL.lowerHalf();
 		
-		for (int i = slots.length / 2;i < slots.length;i++) {  
-                assertTrue(slots[i] == 0);
+		for (int i = 0;i < slots.length;i++) {  
+                assertTrue(slots[i] == test_slots[i]);
         }
 		
 	 }
