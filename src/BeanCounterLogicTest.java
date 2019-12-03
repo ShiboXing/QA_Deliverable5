@@ -78,7 +78,7 @@ public class BeanCounterLogicTest {
             BCL.advanceStep();
         }
 		
-		assertTrue(BCL.getRemainingBeanCount() == 5);
+		assertTrue(BCL.getRemainingBeanCount() == 4);
 	}
 
 	@Test
@@ -160,7 +160,7 @@ public class BeanCounterLogicTest {
 		final int[] slots = {5,5,5,5,6,5,5,5,5};
 		final int[] test_slots = {0,0,0,0,3,5,5,5,5};
 		slotsField.set(BCL,slots);
-		BCL.lowerHalf();
+		BCL.upperHalf();
 		
 		for (int i = 0;i < slots.length;i++) {  
 				assertTrue(slots[i] == test_slots[i]);

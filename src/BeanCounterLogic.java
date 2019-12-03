@@ -172,6 +172,9 @@ public class BeanCounterLogic {
 	public void reset(final Bean[] beans) {
 		// TODO: Implement
 		_beans = beans;
+		for (Bean b : _beans) {
+			b.reset();
+		}
 		_counter = 0;
 		_beanCount = beans.length;
 		for (int i = 0; i < _slots.length; i++) {
