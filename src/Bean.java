@@ -39,6 +39,8 @@ public class Bean {
 	private int _x;
 	private int _y;
 
+	private int _slot;
+
 	/**
 	 * Constructor - creates a bean in either luck mode or skill mode.
 	 * 
@@ -102,6 +104,20 @@ public class Bean {
 		_x = 0;
 		_y = 0;
 		_times = 0;
+	}
+
+	/**
+	 * records the slot index once the bean is in a slot
+	 */
+	public void recordSlot() {
+		_slot = _x;
+	}
+
+	/**
+	 * return the slot index of the bean
+	 */
+	public int getSlot() {
+		return _slot;
 	}
 
 }

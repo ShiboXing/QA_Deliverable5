@@ -220,8 +220,11 @@ public class BeanCounterLogic {
 				if (_beans[i].getY() == Math.max(1, _numOfSlots)) {
 
 					// in case there is only one slot
-					_slots[Math.min(_beans[i].getX(), _slots.length - 1)]++; 
+					_slots[Math.min(_beans[i].getSlot(), _slots.length - 1)]++; 
 					
+				} else if (_beans[i].getY() == Math.max(1, _numOfSlots) - 1) {
+					//the bean is above a slot
+					_beans[i].recordSlot();
 				}
 			}
 			return true;
