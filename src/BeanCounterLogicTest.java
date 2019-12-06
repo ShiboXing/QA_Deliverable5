@@ -369,24 +369,30 @@ public class BeanCounterLogicTest {
             .class.getDeclaredField("_beans");
 		beansField.setAccessible(true);
 		beansField.set(BCL,beans1);
-        final Field SlotNumField = BeanCounterLogic
+        final Field beanCountField = BeanCounterLogic
+            .class.getDeclaredField("_beanCount");
+		beanCountField.setAccessible(true);
+		beanCountField.set(BCL,beans1.length);
+        
+	final Field SlotNumField = BeanCounterLogic
             .class.getDeclaredField("_numOfSlots");
 		SlotNumField.setAccessible(true);
 		final int slotNum = SlotNumField.getInt(BCL);
 		
-		//create a stubbing on beans1[0] that puts this bean one level above the slots
-		Mockito.when(beans1[0].getY()).thenReturn(slotNum - 1); 
+		//create a stubbing on beans1[0] that puts this bean in slot 4
+		Mockito.when(beans1[0].getY()).thenReturn(slotNum); 
 		Mockito.when(beans1[0].getX()).thenReturn(4); //make it go to slot 4
 
         final Field slotsField = BeanCounterLogic
             .class.getDeclaredField("_slots");
 		slotsField.setAccessible(true);
 		final int[] slots = (int[]) slotsField.get(BCL); //retrieve the slots array
-
+		
 
 		assertTrue(slots[4] == 0);
 		BCL.advanceStep(); 
 		Mockito.verify(beans1[0],Mockito.times(1)).move();
+		System.out.println("slots[4]: "+slots[4]);
 		assertTrue(slots[4] == 1);
 	
 	}
