@@ -138,14 +138,14 @@ public class BeanCounterLogicTest {
             slots[i] = 4;
         }
 		beanCountField.set(BCL,4 * slots.length);
-
 		assertTrue(BCL.getAverageSlotBeanCount() == 32.5);
 
 		for (int i = 0;i < slots.length;i++) {
             slots[i] = 0;
-        }
-		slots[41] = 123;
-		assertTrue(BCL.getAverageSlotBeanCount() == 123 * 41.0 / (4 * slots.length));
+		}
+		slots[0] = 4 * slots.length - 120; // put all beans except 120 ones in slot 0
+		slots[41] = 120;
+		assertTrue(BCL.getAverageSlotBeanCount() == 120 * 41.0 / (4 * slots.length));
 	 }
 	 
 	 @Test
@@ -156,10 +156,15 @@ public class BeanCounterLogicTest {
             SecurityException, IllegalArgumentException, IllegalAccessException {
 			final Field slotsField = BeanCounterLogic
 			.class.getDeclaredField("_slots");
+		final Field beansField = BeanCounterLogic
+			.class.getDeclaredField("_beans");
 		slotsField.setAccessible(true);
+		beansField.setAccessible(true);
+
 		final int[] slots = {5,5,5,5,6,5,5,5,5};
 		final int[] test_slots = {0,0,0,0,3,5,5,5,5};
 		slotsField.set(BCL,slots);
+		beansField.set(BCL,beans1);
 		BCL.upperHalf();
 		
 		for (int i = 0;i < slots.length;i++) {  
@@ -175,15 +180,23 @@ public class BeanCounterLogicTest {
      public void testLowerHalf() throws NoSuchFieldException,
              SecurityException, IllegalArgumentException, IllegalAccessException {
         final Field slotsField = BeanCounterLogic
-            .class.getDeclaredField("_slots");
+			.class.getDeclaredField("_slots");
+		final Field beansField = BeanCounterLogic
+			.class.getDeclaredField("_beans");
 		slotsField.setAccessible(true);
+		beansField.setAccessible(true);
+
+		
         final int[] slots = {5,5,5,5,6,5,5,5,5};
 		final int[] test_slots = {5,5,5,5,3,0,0,0,0};
 		slotsField.set(BCL,slots);
+		beansField.set(BCL,beans1);
 		BCL.lowerHalf();
 		
 		for (int i = 0;i < slots.length;i++) {  
-                assertTrue(slots[i] == test_slots[i]);
+			
+			assertTrue(slots[i] == test_slots[i]);
+			
         }
 		
 	 }
@@ -196,13 +209,20 @@ public class BeanCounterLogicTest {
 	 */
     public void testReset1() throws IllegalArgumentException, 
             IllegalAccessException, NoSuchFieldException, SecurityException {
+	
         final Field beansField = BeanCounterLogic
             .class.getDeclaredField("_beans");
 		beansField.setAccessible(true);
 		beansField.set(BCL,beans1);
 
-		final Bean[] testBeans = new Bean[24];
+		Bean[] testBeans = new Bean[24];
+		for (int i = 0;i < testBeans.length;i++) {
+			testBeans[i] = Mockito.mock(Bean.class);
+		}
 		BCL.reset(testBeans);
+		for (Bean b : testBeans) {
+			Mockito.verify(b,Mockito.times(1)).reset();
+		}
 		
 		assertTrue(beansField.get(BCL) == testBeans);
 		
@@ -276,16 +296,13 @@ public class BeanCounterLogicTest {
             assertTrue(i == 0);
 		}
 
-		for (Bean b : beans1) {
-			Mockito.verify(b,Mockito.times(1)).reset();
-		}
 		
 
 	}
 
 	@Test
 	/**
-	 * check if the repeat() resets all beans their initial positions
+	 * check if the repeat() resets all beans from the slots and in Flight
 	 */
     public void testRepeat2() throws NoSuchFieldException, 
             SecurityException, IllegalArgumentException, IllegalAccessException {
@@ -296,14 +313,19 @@ public class BeanCounterLogicTest {
 		BeansField.setAccessible(true);
 		counterField.setAccessible(true);
 		BeansField.set(BCL,beans1);
-		final int counter = 5;
+		final int counter = 13;
 		counterField.set(BCL,counter);
-
+		
+		//two of the beans are in slots
+		Mockito.when(beans1[0].getY()).thenReturn(beans1.length); 
+		Mockito.when(beans1[1].getY()).thenReturn(0); 
+		Mockito.when(beans1[2].getY()).thenReturn(0); 
+		Mockito.when(beans1[3].getY()).thenReturn(beans1.length); 
+		
 		BCL.repeat();
-		for (int i = 0;i < counter;i++) {
+		//there should be 2 + 15 - (13 - 9) (inslot + inflight) beans in the new array
+		assertTrue(((Bean[])BeansField.get(BCL)).length == 2 + beans1.length - (counter - 9));
 
-			Mockito.verify(beans1[i],Mockito.times(1)).reset();
-		}
 		
 		
 	}
@@ -365,28 +387,30 @@ public class BeanCounterLogicTest {
 	 */
     public void testAdvanceStep3() throws NoSuchFieldException, 
             SecurityException, IllegalArgumentException, IllegalAccessException {
+		//System.out.println("test advanceStep3: ");
         final Field beansField = BeanCounterLogic
             .class.getDeclaredField("_beans");
 		beansField.setAccessible(true);
-		beansField.set(BCL,beans1);
+		beansField.set(BCL, beans1);
         final Field SlotNumField = BeanCounterLogic
             .class.getDeclaredField("_numOfSlots");
 		SlotNumField.setAccessible(true);
-		final int slotNum = SlotNumField.getInt(BCL);
+		SlotNumField.set(BCL, beans1.length);
 		
 		//create a stubbing on beans1[0] that puts this bean one level above the slots
-		Mockito.when(beans1[0].getY()).thenReturn(slotNum - 1); 
-		Mockito.when(beans1[0].getX()).thenReturn(4); //make it go to slot 4
+		Mockito.when(beans1[0].getY()).thenReturn(beans1.length); 
+		Mockito.when(beans1[0].getSlot()).thenReturn(4); //make it go to slot 4
 
         final Field slotsField = BeanCounterLogic
             .class.getDeclaredField("_slots");
 		slotsField.setAccessible(true);
 		final int[] slots = (int[]) slotsField.get(BCL); //retrieve the slots array
 
-
 		assertTrue(slots[4] == 0);
 		BCL.advanceStep(); 
+		//System.out.println("test advancestep3 ended");
 		Mockito.verify(beans1[0],Mockito.times(1)).move();
+		//System.out.println("slots[4]: "+slots[4]);
 		assertTrue(slots[4] == 1);
 	
 	}
@@ -415,15 +439,17 @@ public class BeanCounterLogicTest {
 		assertTrue(BCL.runGame(args));
 	}
 	
-    @Test
-    /**
-     * test for the main method's test mode
-     */
-	public void testMainTest() {
-		final String[] args = new String[1];
-		args[0] = "test";
-		assertTrue(BCL.runGame(args));
-	}
+    // @Test
+    // /**
+    //  * test for the main method's test mode
+    //  */
+	// public void testMainTest() {
+	// 	final String[] args = new String[1];
+	// 	args[0] = "test";
+	// 	assertTrue(BCL.runGame(args));
+	// }
+	
+
 
     @After
     /**

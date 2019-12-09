@@ -124,14 +124,13 @@ public class BeanTest {
 		final int skill = skillField.getInt(bean);
 
 		for (int i = 0; i < 9; i++) {
-
 			bean.move();
 			if (i < skill) {
 				assertTrue(xField.getInt(bean) == i + 1); // should go right
 			} else {
 				assertTrue(xField.getInt(bean) == skill);
 			}
-			assertTrue(yField.getInt(bean) == i); // y coordinate increments by 1 each time
+			assertTrue(yField.getInt(bean) == i + 1); // y coordinate increments by 1 each time
 		}
 	}
 
@@ -184,15 +183,49 @@ public class BeanTest {
 
 		bean.reset();
 
-		assertTrue(yField.getInt(bean) == -1);
+		assertTrue(yField.getInt(bean) == 0);
 		assertTrue(xField.getInt(bean) == 0);
 		assertTrue(timesField.getInt(bean) == 0);
 	}
 
+	@Test
+	/**
+	 * test the record slot
+	 */
+	public void testRecordSlot() throws NoSuchFieldException, 
+			SecurityException, IllegalArgumentException, IllegalAccessException {
+		bean = new Bean(true, new Random());
+		final Field xField = Bean.class.getDeclaredField("_x");
+		final Field slotField = Bean.class.getDeclaredField("_slot");
+		xField.setAccessible(true);
+		xField.setInt(bean, 5);
+		slotField.setAccessible(true);
+		
+		
+		bean.recordSlot();
+		assertTrue(slotField.getInt(bean) == 5);
+	
+	}
+
+	@Test
+	/**
+	* test the get slot
+	*/
+	public void testGetSlot() throws NoSuchFieldException,
+			SecurityException, IllegalArgumentException, IllegalAccessException {
+		bean = new Bean(true, new Random());
+		final Field slotField = Bean.class.getDeclaredField("_slot");
+		slotField.setAccessible(true);
+		slotField.setInt(bean, 10003);
+		
+		assertTrue(bean.getSlot() == 10003);
+	}
+
+	
+	@After
 	/**
 	 * deconstruct the test
 	 */
-	@After
 	public void teardown() {
 		bean = null;
 		bean1 = null;

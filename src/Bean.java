@@ -34,12 +34,13 @@ public class Bean {
 	private int _skill = -1; // will be assigned if skill mode is chosen
 
 	private final boolean _mode; // 1 if luck, 0 if skill
+	@FilterField
 	private int _times = 0; // the number of falls the bean has taken, going left if less than skill
 
 	private int _x;
 	private int _y;
 
-	private int _slot;
+	@FilterField private int _slot = -1;
 
 	/**
 	 * Constructor - creates a bean in either luck mode or skill mode.
@@ -104,6 +105,7 @@ public class Bean {
 		_x = 0;
 		_y = 0;
 		_times = 0;
+		_slot = -1;
 	}
 
 	/**

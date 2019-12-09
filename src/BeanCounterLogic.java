@@ -1,8 +1,8 @@
 
-
 import gov.nasa.jpf.annotation.FilterField;
 import gov.nasa.jpf.vm.Verify;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -127,11 +127,27 @@ public class BeanCounterLogic {
 		}
 		beanCount /= 2;
 		for (int i = 0; i < _slots.length && beanCount != 0; i++) {
-			if (_slots[i] <= beanCount) {
+			if (_slots[i] > 0 && _slots[i] <= beanCount) {
 				beanCount -= _slots[i];
 				_slots[i] = 0;
-			} else if (_slots[i] > beanCount && beanCount != 0) {
+				//reset all beans that are in ith slot
+				for (Bean b:_beans) { 
+					if (b.getSlot() == i) {
+						b.reset();
+					}
+				}
+			} else if (_slots[i] > 0 && _slots[i] > beanCount && beanCount != 0) {
 				_slots[i] -= beanCount;
+				//reset beanCount # of beans that are in ith slot
+				for (Bean b:_beans) { 
+					if(b.getSlot() == i) {
+						b.reset();
+						beanCount--;
+						if (beanCount == 0) {
+							break;
+						}
+					}
+				}
 				beanCount = 0;
 			}
 		}
@@ -145,6 +161,7 @@ public class BeanCounterLogic {
 	 */
 	public void lowerHalf() {
 		// TODO: Implement
+
 		int beanCount = 0;
 		for (int i = 0; i < _slots.length; i++) {
 			beanCount += _slots[i];
@@ -155,14 +172,37 @@ public class BeanCounterLogic {
 		}
 		beanCount /= 2;
 		for (int i = _slots.length - 1; i >= 0 && beanCount != 0; i--) {
-			if (_slots[i] <= beanCount) {
+			if (_slots[i] > 0 && _slots[i] <= beanCount ) {
 				beanCount -= _slots[i];
 				_slots[i] = 0;
-			} else if (_slots[i] > beanCount && beanCount != 0) {
+				
+				//reset all beans that are in ith slot
+				for (Bean b:_beans) { 
+					if (b.getSlot() == i) {
+						b.reset();
+					}
+				}
+			} else if (_slots[i] > 0 && _slots[i] > beanCount && beanCount != 0) {
+				
 				_slots[i] -= beanCount;
+				//reset beanCount # of beans that are in ith slot
+				for (Bean b:_beans) { 
+					if(b.getSlot() == i) {
+						b.reset();
+						beanCount--;
+						if (beanCount == 0) {
+							break;
+						}
+					}
+				}
 				beanCount = 0;
+
 			}
 		}
+		
+
+		
+
 	}
 
 	/**
@@ -192,9 +232,20 @@ public class BeanCounterLogic {
 		for (int i = 0; i < _slots.length; i++) {
 			_slots[i] = 0;
 		}
-		for (int i = 0; i < _beans.length; i++) {
-			_beans[i].reset();
+		ArrayList<Bean> newBeansList = new ArrayList<>();
+		for (int i = 0; i < _beans.length;i++) {
+			if (_beans[i].getY() != 0  || i >= _counter - _numOfSlots) {
+				newBeansList.add(_beans[i]);
+			}
 		}
+		
+		
+		Bean[] newBeans = new Bean[newBeansList.size()];
+		for (int i = 0;i < newBeans.length;i++) {
+			newBeans[i] = newBeansList.get(i);
+		}
+		
+		this.reset(newBeans);
 		_counter = 0;
 	}
 
@@ -208,25 +259,29 @@ public class BeanCounterLogic {
 	 */
 	public boolean advanceStep() {
 		if (_beans.length != 0 && _counter < _beans.length + _numOfSlots) {
-
-			_counter++;
-			_beanCount++;
-
-			for (int i = Math.max(_counter - _numOfSlots, 0); i < Math.min(_counter, _beans.length); i++) {
+		
+			
+			for (int i = Math.max(_counter - _numOfSlots, 0); 
+					i < Math.min(_counter + 1, _beans.length); i++) {
 				_beans[i].move();
 
 				// System.out.printf("beans[%d].y:%d beans[%d].x:
 				// %d\n",i,_beans[i].getY(),i,_beans[i].getX());
-				if (_beans[i].getY() == Math.max(1, _numOfSlots)) {
+				//System.out.println("counter: "+_counter+" beans[i]: "+i+"  "+_beans[i].getY());
+				if ((_beans[i].getY() == Math.max(1, _numOfSlots) && _numOfSlots != 1)
+					|| ((_numOfSlots == 1 && _beans[i].getY() == 2))) {
 
 					// in case there is only one slot
 					_slots[Math.min(_beans[i].getSlot(), _slots.length - 1)]++; 
 					
-				} else if (_beans[i].getY() == Math.max(1, _numOfSlots) - 1) {
+				} else if ((_beans[i].getY() == Math.max(1, _numOfSlots) - 1 && _numOfSlots != 1)
+					|| (_numOfSlots == 1 && _beans[i].getY() == 1)) {
 					//the bean is above a slot
 					_beans[i].recordSlot();
 				}
 			}
+			
+			_counter++;
 			return true;
 		}
 
@@ -251,7 +306,6 @@ public class BeanCounterLogic {
 			// values 1-5 using the JPF Verify API.
 			beanCount = Verify.getInt(0, 3);
 			slotCount = Verify.getInt(1, 5);
-			//System.out.println(beanCount+" "+slotCount);
 
 			// Create the internal logic
 			final BeanCounterLogic logic = new BeanCounterLogic(slotCount);
@@ -277,16 +331,13 @@ public class BeanCounterLogic {
 				// TODO: Check invariant property: the sum of remaining, in-flight, and in-slot
 				// beans always have to be equal to beanCount
 				int InFlightSum = 0;
-				for (int yPos = 0; yPos < Math.max(1,slotCount - 1); yPos++) {
+				for (int yPos = 0; yPos < Math.max(2,slotCount); yPos++) {
 					InFlightSum += logic.getInFlightBeanXPos(yPos) != logic.NO_BEAN_IN_YPOS ? 1 : 0;
 				}
 				int SlotSum = 0;
 				for (int i = 0; i < slotCount; i++) {
 					SlotSum += logic._slots[i];
 				}
-				//System.out.println("remaining: "+logic.getRemainingBeanCount());
-				//System.out.println(logic.getRemainingBeanCount() + " " + InFlightSum + " " + SlotSum);
-				//System.out.println("counter: "+logic._counter);
 				assert logic.getRemainingBeanCount() + InFlightSum + SlotSum == beanCount;
 
 				if (!logic.advanceStep()) {
