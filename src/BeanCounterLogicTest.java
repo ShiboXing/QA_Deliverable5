@@ -397,7 +397,7 @@ public class BeanCounterLogicTest {
 		SlotNumField.setAccessible(true);
 		SlotNumField.set(BCL, beans1.length);
 		
-		//create a stubbing on beans1[0] that puts this bean one level above the slots
+		//create a stubbing on beans1[0]
 		Mockito.when(beans1[0].getY()).thenReturn(beans1.length); 
 		Mockito.when(beans1[0].getSlot()).thenReturn(4); //make it go to slot 4
 
@@ -405,12 +405,10 @@ public class BeanCounterLogicTest {
             .class.getDeclaredField("_slots");
 		slotsField.setAccessible(true);
 		final int[] slots = (int[]) slotsField.get(BCL); //retrieve the slots array
-
 		assertTrue(slots[4] == 0);
 		BCL.advanceStep(); 
 		//System.out.println("test advancestep3 ended");
 		Mockito.verify(beans1[0],Mockito.times(1)).move();
-		//System.out.println("slots[4]: "+slots[4]);
 		assertTrue(slots[4] == 1);
 	
 	}
