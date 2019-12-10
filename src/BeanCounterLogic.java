@@ -211,12 +211,15 @@ public class BeanCounterLogic {
 	 */
 	public void reset(final Bean[] beans) {
 		// TODO: Implement
-		_beans = beans;
+		_beans = new Bean[beans.length];
+		for(int i = 0;i < _beans.length;i++) {
+			_beans[i] = beans[i];
+		}
 		for (Bean b : _beans) {
 			b.reset();
 		}
 		_counter = 0;
-		_beanCount = beans.length;
+		_beanCount = _beans.length;
 		for (int i = 0; i < _slots.length; i++) {
 			_slots[i] = 0;
 		}
@@ -270,13 +273,17 @@ public class BeanCounterLogic {
 				// %d\n",i,_beans[i].getY(),i,_beans[i].getX());
 				//System.out.println("counter: "+_counter+" beans[i]: "+i+"  "+_beans[i].getY());
 				if ((_beans[i].getY() == Math.max(1, _numOfSlots) && _numOfSlots != 1)
-					|| ((_numOfSlots == 1 && _beans[i].getY() == 2))) {
+					|| ((_numOfSlots == 1 && _beans[i].getY() == 1))) {
 
 					// in case there is only one slot
-					_slots[Math.min(_beans[i].getSlot(), _slots.length - 1)]++; 
+					if (_beans[i].getY() == 1 && _numOfSlots == 1) {
+						_beans[i].setSlot(1);
+					}
+					_beans[i].setSlot(Math.min(_beans[i].getSlot(),_slots.length - 1));
+					_slots[_beans[i].getSlot()]++; 
 					
 				} else if ((_beans[i].getY() == Math.max(1, _numOfSlots) - 1 && _numOfSlots != 1)
-					|| (_numOfSlots == 1 && _beans[i].getY() == 1)) {
+					|| (_numOfSlots == 1 && _beans[i].getY() == 0)) {
 					//the bean is above a slot
 					_beans[i].recordSlot();
 				}
@@ -310,6 +317,7 @@ public class BeanCounterLogic {
 				slotCount = Verify.getInt(1, 5);
 			} 
 
+			
 			// Create the internal logic
 			final BeanCounterLogic logic = new BeanCounterLogic(slotCount);
 			// Create the beans (in luck mode)
@@ -334,13 +342,14 @@ public class BeanCounterLogic {
 				// TODO: Check invariant property: the sum of remaining, in-flight, and in-slot
 				// beans always have to be equal to beanCount
 				int InFlightSum = 0;
-				for (int yPos = 0; yPos < Math.max(2,slotCount); yPos++) {
+				for (int yPos = 0; yPos < slotCount; yPos++) {
 					InFlightSum += logic.getInFlightBeanXPos(yPos) != logic.NO_BEAN_IN_YPOS ? 1 : 0;
 				}
 				int SlotSum = 0;
 				for (int i = 0; i < slotCount; i++) {
 					SlotSum += logic._slots[i];
 				}
+				
 				assert logic.getRemainingBeanCount() + InFlightSum + SlotSum == beanCount;
 
 				if (!logic.advanceStep()) {
