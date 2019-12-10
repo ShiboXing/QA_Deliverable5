@@ -217,7 +217,10 @@ public class BeanCounterLogicTest {
 			Mockito.verify(b,Mockito.times(1)).reset();
 		}
 		
-		assertTrue(beansField.get(BCL) == testBeans);
+		Bean[] testBeansBCL = (Bean[]) beansField.get(BCL);
+		for (int i = 0;i < testBeansBCL.length;i++) {
+			assertTrue(testBeansBCL[i] == testBeans[i]);
+		}
 		
 	}
 

@@ -211,12 +211,15 @@ public class BeanCounterLogic {
 	 */
 	public void reset(final Bean[] beans) {
 		// TODO: Implement
-		_beans = beans;
+		_beans = new Bean[beans.length];
+		for(int i = 0;i < _beans.length;i++) {
+			_beans[i] = beans[i];
+		}
 		for (Bean b : _beans) {
 			b.reset();
 		}
 		_counter = 0;
-		_beanCount = beans.length;
+		_beanCount = _beans.length;
 		for (int i = 0; i < _slots.length; i++) {
 			_slots[i] = 0;
 		}
@@ -273,7 +276,11 @@ public class BeanCounterLogic {
 					|| ((_numOfSlots == 1 && _beans[i].getY() == 1))) {
 
 					// in case there is only one slot
-					_slots[Math.min(_beans[i].getSlot(), _slots.length - 1)]++; 
+					if (_beans[i].getY() == 1 && _numOfSlots == 1) {
+						_beans[i].setSlot(1);
+					}
+					_beans[i].setSlot(Math.min(_beans[i].getSlot(),_slots.length - 1));
+					_slots[_beans[i].getSlot()]++; 
 					
 				} else if ((_beans[i].getY() == Math.max(1, _numOfSlots) - 1 && _numOfSlots != 1)
 					|| (_numOfSlots == 1 && _beans[i].getY() == 0)) {

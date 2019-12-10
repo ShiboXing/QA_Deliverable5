@@ -91,6 +91,8 @@ public class Bean {
 		return _x;
 	}
 
+	
+
 	/**
 	 * return the y coordinate
 	 */
@@ -115,11 +117,17 @@ public class Bean {
 		_slot = _x;
 	}
 
+	public void setSlot(int s) {
+		_slot = s;
+	}
+
 	/**
 	 * return the slot index of the bean
 	 */
 	public int getSlot() {
 		return _slot;
 	}
+
+	
 
 }
