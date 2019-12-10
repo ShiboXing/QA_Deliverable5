@@ -268,7 +268,12 @@ public class MainPanel extends JPanel {
 	public void drawStats(Graphics g) {
 		Dimension d = getSize();
 		g.setFont(new Font("Courier", Font.PLAIN, 20));
-		String average = "Average = " + new DecimalFormat("#.##").format(_logic.getAverageSlotBeanCount());
+		String average = "";
+		if (_logic.getAverageSlotBeanCount() <= 0) {
+			average = "Average = 0.00";
+		} else {
+			average = "Average = " + new DecimalFormat("#.##").format(_logic.getAverageSlotBeanCount());
+		}
 		g.drawString(average, d.width - 200, TOP_MARGIN);
 		String remaining = "Remaining = " + _logic.getRemainingBeanCount();
 		g.drawString(remaining, d.width - 200, TOP_MARGIN + 30);
