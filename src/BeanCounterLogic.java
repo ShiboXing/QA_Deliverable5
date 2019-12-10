@@ -317,6 +317,7 @@ public class BeanCounterLogic {
 				slotCount = Verify.getInt(1, 5);
 			} 
 
+			
 			// Create the internal logic
 			final BeanCounterLogic logic = new BeanCounterLogic(slotCount);
 			// Create the beans (in luck mode)
@@ -341,13 +342,14 @@ public class BeanCounterLogic {
 				// TODO: Check invariant property: the sum of remaining, in-flight, and in-slot
 				// beans always have to be equal to beanCount
 				int InFlightSum = 0;
-				for (int yPos = 0; yPos < Math.max(2,slotCount); yPos++) {
+				for (int yPos = 0; yPos < slotCount; yPos++) {
 					InFlightSum += logic.getInFlightBeanXPos(yPos) != logic.NO_BEAN_IN_YPOS ? 1 : 0;
 				}
 				int SlotSum = 0;
 				for (int i = 0; i < slotCount; i++) {
 					SlotSum += logic._slots[i];
 				}
+				
 				assert logic.getRemainingBeanCount() + InFlightSum + SlotSum == beanCount;
 
 				if (!logic.advanceStep()) {
