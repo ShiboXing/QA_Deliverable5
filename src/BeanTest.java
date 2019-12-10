@@ -209,8 +209,8 @@ public class BeanTest {
 
 	@Test
 	/**
-	* test the get slot
-	*/
+	 * test the get slot
+	 */
 	public void testGetSlot() throws NoSuchFieldException,
 			SecurityException, IllegalArgumentException, IllegalAccessException {
 		bean = new Bean(true, new Random());
@@ -224,7 +224,7 @@ public class BeanTest {
 	
 	@After
 	/**
-	 * deconstruct the test
+	 *  Deconstruct the test
 	 */
 	public void teardown() {
 		bean = null;

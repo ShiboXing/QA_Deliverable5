@@ -42,6 +42,9 @@ public class BeanCounterLogic {
 	private Bean[] _beans;
 	private int _counter; // a pointer point to beans array that indicates the last bean released to the
 							// machine.
+	
+	private static int _beanCountTest = -1;
+	private static int _slotCountTest = -1;
 
 	/**
 	 * Constructor - creates the bean counter logic object that implements the core
@@ -54,7 +57,7 @@ public class BeanCounterLogic {
 		_numOfSlots = slotCount;
 		_counter = 0;
 		_slots = new int[_numOfSlots];
-		_beanCount = 0;	
+		_beanCount = 0;
 	}
 
 	/**
@@ -143,7 +146,7 @@ public class BeanCounterLogic {
 				_slots[i] -= beanCount;
 				//reset beanCount # of beans that are in ith slot
 				for (Bean b:_beans) { 
-					if(b.getSlot() == i) {
+					if (b.getSlot() == i) {
 						b.reset();
 						beanCount--;
 						if (beanCount == 0) {
@@ -188,7 +191,7 @@ public class BeanCounterLogic {
 				_slots[i] -= beanCount;
 				//reset beanCount # of beans that are in ith slot
 				for (Bean b:_beans) { 
-					if(b.getSlot() == i) {
+					if (b.getSlot() == i) {
 						b.reset();
 						beanCount--;
 						if (beanCount == 0) {
@@ -200,10 +203,6 @@ public class BeanCounterLogic {
 
 			}
 		}
-		
-
-		
-
 	}
 
 	/**
@@ -223,6 +222,7 @@ public class BeanCounterLogic {
 		}
 	}
 
+	
 	/**
 	 * Repeats the experiment by scooping up all beans in the slots and all beans
 	 * in-flight and adding them into the pool of remaining beans. As in the
@@ -300,13 +300,15 @@ public class BeanCounterLogic {
 	 */
 	public static boolean runGame(final String[] args) {
 		boolean luck;
-		int beanCount = 2;
-		int slotCount = 1;
+		int beanCount = _beanCountTest;
+		int slotCount = _slotCountTest;
 		if (args.length == 1 && args[0].equals("test")) {
 			// TODO: Verify the model checking passes for beanCount values 0-3 and slotCount
 			// values 1-5 using the JPF Verify API.
-			beanCount = Verify.getInt(0, 3);
-			slotCount = Verify.getInt(1, 5);
+			if (beanCount == -1 && slotCount == -1) {
+				beanCount = Verify.getInt(0, 3);
+				slotCount = Verify.getInt(1, 5);
+			} 
 
 			// Create the internal logic
 			final BeanCounterLogic logic = new BeanCounterLogic(slotCount);

@@ -29,7 +29,6 @@ public class BeanCounterLogicTest {
 			beans1[i] = Mockito.mock(Bean.class);
 			Mockito.when(beans1[i].move()).thenReturn(true); //let every bean go left in every step
 		}
-
 	}
 
 	@Test
@@ -43,7 +42,7 @@ public class BeanCounterLogicTest {
         final Field counter = BeanCounterLogic
             .class.getDeclaredField("_counter");
 		counter.setAccessible(true);
-		numOfSlotsField.setAccessible(true);	
+		numOfSlotsField.setAccessible(true);
 		
         final Field slotsField = BeanCounterLogic
             .class.getDeclaredField("_slots");
@@ -170,7 +169,6 @@ public class BeanCounterLogicTest {
 		for (int i = 0;i < slots.length;i++) {  
 				assertTrue(slots[i] == test_slots[i]);
 		}
-
 	 }
 
 	 @Test
@@ -186,7 +184,7 @@ public class BeanCounterLogicTest {
 		slotsField.setAccessible(true);
 		beansField.setAccessible(true);
 
-		
+
         final int[] slots = {5,5,5,5,6,5,5,5,5};
 		final int[] test_slots = {5,5,5,5,3,0,0,0,0};
 		slotsField.set(BCL,slots);
@@ -194,14 +192,9 @@ public class BeanCounterLogicTest {
 		BCL.lowerHalf();
 		
 		for (int i = 0;i < slots.length;i++) {  
-			
 			assertTrue(slots[i] == test_slots[i]);
-			
         }
-		
-	 }
-
-
+	}
 
 	@Test
 	/**
@@ -256,8 +249,7 @@ public class BeanCounterLogicTest {
 		assertTrue(counterField.getInt(BCL) == 0);
 		
 	}
-
-
+	
 	@Test
 	/**
 	 * check if repeat() recovers the counter, count of beans per slot
@@ -280,8 +272,6 @@ public class BeanCounterLogicTest {
 		BeansField.setAccessible(true);
 		beanCountField.setAccessible(true);
 
-		
-
 		BeansField.set(BCL,beans1);
 		final int[] slots = {2,3,4,1,5,2,4,4}; //insert the _slots array
 		slotsField.set(BCL,slots);
@@ -295,9 +285,6 @@ public class BeanCounterLogicTest {
 		for (final int i:slots) {
             assertTrue(i == 0);
 		}
-
-		
-
 	}
 
 	@Test
@@ -325,9 +312,6 @@ public class BeanCounterLogicTest {
 		BCL.repeat();
 		//there should be 2 + 15 - (13 - 9) (inslot + inflight) beans in the new array
 		assertTrue(((Bean[])BeansField.get(BCL)).length == 2 + beans1.length - (counter - 9));
-
-		
-		
 	}
 
 	@Test
@@ -437,15 +421,38 @@ public class BeanCounterLogicTest {
 		assertTrue(BCL.runGame(args));
 	}
 	
-    // @Test
-    // /**
-    //  * test for the main method's test mode
-    //  */
-	// public void testMainTest() {
-	// 	final String[] args = new String[1];
-	// 	args[0] = "test";
-	// 	assertTrue(BCL.runGame(args));
-	// }
+    @Test
+    /**
+     * test for the main method's test mode
+     */
+    public void testMainTest() throws NoSuchFieldException, SecurityException, 
+    			IllegalArgumentException, IllegalAccessException {
+	 	final String[] args = new String[1];
+	 	final Field beanCountTestField = BeanCounterLogic
+	            .class.getDeclaredField("_beanCountTest");
+	 	final Field slotCountTestField = BeanCounterLogic
+	            .class.getDeclaredField("_slotCountTest");
+	 	beanCountTestField.setAccessible(true);
+	 	slotCountTestField.setAccessible(true);
+	 
+	 	beanCountTestField.set(BCL, 0);
+	 	slotCountTestField.set(BCL, 0);
+	 	
+	 	args[0] = "test";
+	 	assertTrue(BCL.runGame(args));
+    }
+    
+    @Test
+    /**
+     * test for the main method's test mode
+     */
+    public void testMainTest1() throws NoSuchFieldException, SecurityException, 
+    			IllegalArgumentException, IllegalAccessException {
+	 	final String[] args = new String[1];
+	 	
+	 	args[0] = "nonsense";
+	 	assertTrue(BCL.runGame(args));
+    }
 	
 
 
@@ -453,8 +460,19 @@ public class BeanCounterLogicTest {
     /**
      * deconstruct the test
      */
-	public void tearDown() {
+	public void tearDown() throws NoSuchFieldException, SecurityException, 
+				IllegalArgumentException, IllegalAccessException {
 		BCL = null;
 		beans1 = null;
+		final Field beanCountTestField = BeanCounterLogic
+	            .class.getDeclaredField("_beanCountTest");
+	 	final Field slotCountTestField = BeanCounterLogic
+	            .class.getDeclaredField("_slotCountTest");
+	 	beanCountTestField.setAccessible(true);
+	 	slotCountTestField.setAccessible(true);
+	 	beanCountTestField.set(BCL, -1);
+	 	slotCountTestField.set(BCL, -1);
+	 	
+	 
 	}
 }
