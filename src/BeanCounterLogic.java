@@ -140,7 +140,7 @@ public class BeanCounterLogic {
 				_slots[i] -= beanCount;
 				//reset beanCount # of beans that are in ith slot
 				for (Bean b:_beans) { 
-					if(b.getSlot() == i) {
+					if (b.getSlot() == i) {
 						b.reset();
 						beanCount--;
 						if (beanCount == 0) {
@@ -187,7 +187,7 @@ public class BeanCounterLogic {
 				_slots[i] -= beanCount;
 				//reset beanCount # of beans that are in ith slot
 				for (Bean b:_beans) { 
-					if(b.getSlot() == i) {
+					if (b.getSlot() == i) {
 						b.reset();
 						beanCount--;
 						if (beanCount == 0) {
@@ -269,13 +269,13 @@ public class BeanCounterLogic {
 				// %d\n",i,_beans[i].getY(),i,_beans[i].getX());
 				//System.out.println("counter: "+_counter+" beans[i]: "+i+"  "+_beans[i].getY());
 				if ((_beans[i].getY() == Math.max(1, _numOfSlots) && _numOfSlots != 1)
-					|| ((_numOfSlots == 1 && _beans[i].getY() == 2))) {
+					|| ((_numOfSlots == 1 && _beans[i].getY() == 1))) {
 
 					// in case there is only one slot
 					_slots[Math.min(_beans[i].getSlot(), _slots.length - 1)]++; 
 					
 				} else if ((_beans[i].getY() == Math.max(1, _numOfSlots) - 1 && _numOfSlots != 1)
-					|| (_numOfSlots == 1 && _beans[i].getY() == 1)) {
+					|| (_numOfSlots == 1 && _beans[i].getY() == 0)) {
 					//the bean is above a slot
 					_beans[i].recordSlot();
 				}
