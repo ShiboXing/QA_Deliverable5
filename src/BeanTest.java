@@ -14,8 +14,6 @@ public class BeanTest {
 	// TODO: implement
 	// Be sure to mock Random if you don't want randomness during testing!
 	Bean bean;
-	Bean bean1;
-	Bean bean2;
 	
 	@Before
 	public void setup(){
@@ -204,7 +202,6 @@ public class BeanTest {
 		
 		bean.recordSlot();
 		assertTrue(slotField.getInt(bean) == 5);
-	
 	}
 
 	@Test
@@ -221,14 +218,12 @@ public class BeanTest {
 		assertTrue(bean.getSlot() == 10003);
 	}
 
-	
+
+    /**
+     * Tear down the test variables
+     */
 	@After
-	/**
-	 *  Deconstruct the test
-	 */
-	public void teardown() {
+	public void tearDown() {
 		bean = null;
-		bean1 = null;
-		bean2 = null;
 	}
-}
+ }
