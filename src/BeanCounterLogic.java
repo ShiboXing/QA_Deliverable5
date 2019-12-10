@@ -342,9 +342,24 @@ public class BeanCounterLogic {
 				// TODO: Check invariant property: the sum of remaining, in-flight, and in-slot
 				// beans always have to be equal to beanCount
 				int InFlightSum = 0;
+
 				for (int yPos = 0; yPos < slotCount; yPos++) {
 					InFlightSum += logic.getInFlightBeanXPos(yPos) != logic.NO_BEAN_IN_YPOS ? 1 : 0;
 				}
+				
+				int[] rowCount = new int[slotCount]; //sums the beans on row i
+				
+				for (Bean b : logic._beans) {
+					if (b.getY() < slotCount && b.getY() > 0) {
+						rowCount[b.getY()]++;
+					}
+				}
+				//there should be exactly one bean at each row
+				for (int i : rowCount) {
+					assert i <= 1;
+				}
+				
+
 				int SlotSum = 0;
 				for (int i = 0; i < slotCount; i++) {
 					SlotSum += logic._slots[i];
@@ -355,6 +370,8 @@ public class BeanCounterLogic {
 				if (!logic.advanceStep()) {
 					break;
 				}
+
+			
 
 			}
 
