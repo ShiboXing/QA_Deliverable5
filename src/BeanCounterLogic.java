@@ -212,7 +212,7 @@ public class BeanCounterLogic {
 	public void reset(final Bean[] beans) {
 		// TODO: Implement
 		_beans = new Bean[beans.length];
-		for(int i = 0;i < _beans.length;i++) {
+		for (int i = 0;i < _beans.length;i++) {
 			_beans[i] = beans[i];
 		}
 		for (Bean b : _beans) {

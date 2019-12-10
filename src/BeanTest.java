@@ -14,8 +14,6 @@ public class BeanTest {
 	// TODO: implement
 	// Be sure to mock Random if you don't want randomness during testing!
 	Bean bean;
-	Bean bean1;
-	Bean bean2;
 	
 	@Before
 	public void setup(){
@@ -227,7 +225,5 @@ public class BeanTest {
 	@After
 	public void tearDown() {
 		bean = null;
-		bean1 = null;
-		bean2 = null;
 	}
  }
