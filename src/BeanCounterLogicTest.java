@@ -455,11 +455,10 @@ public class BeanCounterLogicTest {
     }
 	
 
-
-    @After
     /**
-     * deconstruct the test
+     * Tear down the test variables
      */
+    @After
 	public void tearDown() throws NoSuchFieldException, SecurityException, 
 				IllegalArgumentException, IllegalAccessException {
 		BCL = null;
@@ -472,7 +471,5 @@ public class BeanCounterLogicTest {
 	 	slotCountTestField.setAccessible(true);
 	 	beanCountTestField.set(BCL, -1);
 	 	slotCountTestField.set(BCL, -1);
-	 	
-	 
 	}
 }

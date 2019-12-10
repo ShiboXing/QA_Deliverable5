@@ -204,7 +204,6 @@ public class BeanTest {
 		
 		bean.recordSlot();
 		assertTrue(slotField.getInt(bean) == 5);
-	
 	}
 
 	@Test
@@ -221,14 +220,14 @@ public class BeanTest {
 		assertTrue(bean.getSlot() == 10003);
 	}
 
-	
+
+    /**
+     * Tear down the test variables
+     */
 	@After
-	/**
-	 *  Deconstruct the test
-	 */
-	public void teardown() {
+	public void tearDown() {
 		bean = null;
 		bean1 = null;
 		bean2 = null;
 	}
-}
+ }
